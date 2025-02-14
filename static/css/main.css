@@ -1,0 +1,343 @@
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+body {
+    margin-top: 120px;
+    background-color: white;
+}
+
+.banner {
+    height: 587px !important;
+    width: 1340px !important;
+    display: block;
+    margin: 0 auto;
+    margin-top: 30px;
+    border-radius: 20px;
+}
+
+.cards-advantages {
+    margin-top: 160px !important;
+}
+
+.card-advantages {
+    height: 300px !important;
+}
+
+.card {
+    border-radius: 10px;
+    position: relative;
+}
+
+.badge-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid white;
+}
+
+.card h6 {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: 300;
+}
+
+.card p {
+    margin-top: 25px;
+    font-size: 16px;
+}
+
+.recommendations {
+    margin-top: 120px !important;
+}
+
+.watch-apart {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+    border-radius: 10px !important;
+}
+
+.watch-apart:active {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.watch-apart:hover {
+    background-color: #5f6a73 !important;
+    border-color: #5f6a73 !important;
+}
+
+.watch-apart:focus {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.reserve {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+    height: 58px !important;
+}
+
+.reserve:active {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.reserve:hover {
+    background-color: #5f6a73 !important;
+    border-color: #5f6a73 !important;
+}
+
+.reserve:focus {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.btn-outline-primary {
+    border-color: #A8A7A7;
+    color: black;
+}
+
+.btn-outline-primary:hover {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.btn-outline-primary:active {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.btn-outline-primary:focus {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.booking-logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.review-controls {
+    position: absolute;
+    top: -30px !important;
+    right: 0;
+}
+
+.reviews-container {
+    margin-top: 120px !important;
+}
+
+.services-container {
+    margin-top: 120px !important;
+}
+
+#reviewsContainer {
+    overflow: hidden;
+    width: 100%;
+}
+
+.review-card-container {
+    display: flex;
+    gap: 16px;
+    transition: transform 0.3s ease;
+}
+
+.card {
+    flex: 0 0 32%;
+    box-sizing: border-box;
+}
+
+.arrow {
+    background-color: white;
+    border: none;
+}
+
+.attraction-container {
+    margin-top: 120px !important;
+}
+
+.questions-container {
+    margin-top: 120px !important;
+}
+
+.questions {
+    margin-top: 50px !important;
+}
+
+.questions-img {
+    margin-top: -33px;
+}
+
+.accordion-item {
+    border: none;
+}
+
+.accordion-button {
+    border-bottom: 1px solid #ddd;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: transparent;
+    color: #000;
+}
+
+.accordion-button:not(.collapsed) {
+    border-bottom: 1px solid #ddd;
+}
+
+.end-container {
+    margin-top: 120px !important;
+}
+
+.form-end {
+    margin-top: 100px !important;
+    width: 30% !important;
+    border-top: 4px solid grey !important;
+}
+
+.form-end-button{
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.form-end-button:hover {
+    background-color: #5f6a73 !important;
+    border-color: #5f6a73 !important;
+}
+
+.footer {
+    margin-top: -55px;
+}
+
+.watch-button-banner {
+    background-color: rgba(255, 255, 255, 0) !important;
+    border-color: white !important;
+    border-radius: 10px !important;
+}
+
+.watch-button-banner:hover {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+nav a {
+    position: relative;
+}
+
+nav a::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: black;
+    transition: width 0.3s ease;
+}
+
+.active-nav {
+    border-bottom: 3px solid black;
+}
+
+nav a:hover::after {
+    width: 100%;
+}
+
+.catalog {
+    margin-top: 170px !important;
+}
+
+.catalog-search {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.catalog-search:hover {
+    background-color: #5f6a73 !important;
+    border-color: #5f6a73 !important;
+}
+
+.pagination {
+    padding: 4px;
+    gap: 2px;
+    border-radius: 10px !important;
+    display: flex;
+    background-color: white;
+    width: max-content;
+    height:max-content;
+    margin-left: auto;
+    border: 1px solid #284356;
+}
+
+.pagination a, .pagination span {
+    padding-inline: 5px;
+    min-width: 31px;
+    height: 31px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    transition: background-color .2s ease-in-out;
+    border-radius:48px;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    background-color:#284356;
+    color: white;
+}
+
+.pagination .current-page {
+    background-color:#284356;
+    color: white;
+}
+
+.pagination .active-page {
+    background-color:#284356;
+    color: white;
+}
+
+.services-apart {
+    padding: 10px !important;
+}
+
+.apartment-details {
+    margin-top: 150px !important;
+}
+
+.bron {
+    background-color: #284356 !important;
+    border-color: #284356 !important;
+}
+
+.bron:hover {
+    background-color: #5f6a73 !important;
+    border-color: #5f6a73 !important;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.reservation {
+    margin-top: 150px !important;
+}
+
+.info-bron {
+    border-radius: 10px !important;
+    border: 1px solid #284356 !important;
+}
+
+.payment-container {
+    margin-top: 150px !important;
+}

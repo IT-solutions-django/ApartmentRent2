@@ -1,0 +1,217 @@
+{% load static %}
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование | GOSTI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <script src="{% static 'js/reservation.js' %}" defer></script>
+</head>
+<body>
+
+    <!-- Шапка -->
+    <header class="bg-white shadow-sm py-3 px-5 d-flex justify-content-between align-items-center">
+        <div class="text-center" style="font-size: 36px !important; font-family: 'Aboreto', cursive;"><a href="/">GOSTI<p style="font-size: 12px; vertical-align: bottom;">VLADIVOSTOK</p></a></div>
+        <nav>
+            <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
+            <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
+        </nav>
+        <div class="text-end">
+    <div class="d-flex align-items-center justify-content-end">
+        <a href="#" class="me-2 text-primary fs-5">
+            <img src="{% static 'img/telegram.png' %}" alt="telegram" class="img-fluid">
+        </a>
+        <a href="#" class="me-2 text-success fs-5">
+            <img src="{% static 'img/whatsapp.png' %}" alt="whatsapp" class="img-fluid">
+        </a>
+        <p class="mb-0 text-dark ms-2">+7 (900) 123-45-67</p>
+    </div>
+    <div class="text-end d-flex align-items-center justify-content-end mt-3">
+        <a href="#" class="text-dark text-decoration-none me-2">Личный кабинет</a>
+        <i class="bi bi-person fs-5 text-dark"></i>
+    </div>
+</div>
+
+    </header>
+
+
+
+
+<section class="container mt-5 reservation">
+    <div class="row">
+        <div class="col-md-6">
+            <span class="fs-2 d-block" style="color: #284356;">Введите свои данные</span>
+            <hr class="mt-1">
+        </div>
+    </div>
+
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row">
+            <!-- Левая часть: Поля формы -->
+            <div class="col-md-6">
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        {{ form.surname }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.name }}
+                    </div>
+                </div>
+                <div class="form-group mt-4">
+                    {{ form.patronymic }}
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        {{ form.phone }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.email }}
+                    </div>
+                </div>
+                <div class="form-group mt-5">
+                    {{ form.comment }}
+                </div>
+            </div>
+
+            <!-- Правая часть: Информация о бронировании -->
+            <div class="col-md-5 ms-auto">
+                <div class="border p-3 info-bron">
+                    <span class="fs-4" style="color: #284356;">Ваше бронирование</span>
+                    <p id="days-count">1 сутки</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " value="{{ date_now }}">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " value="{{ date_tomorrow }}">
+                        </div>
+                    </div>
+                    <p class="text-muted mb-4" style="font-size: 13px;"><span class="ms-1">С 12:00</span> <span style="margin-left: 120px;">До 14:00</span></p>
+
+                    <span style="font-size: 22px;">{{ card_info.name }}</span>
+                    <span class="card-text text-muted ms-4"><i class="bi bi-people fs-6"></i> до {{ card_info.quantity_people }} мест</span>
+                    <span class="text-muted ms-4"><i class="bi bi-arrows-angle-contract"></i> {{ card_info.square }} м²</span>
+                    <hr>
+                    <div class="d-flex justify-content-between mt-5">
+                        <span style="font-size: 24px;">К оплате:</span>
+                        <span style="font-size: 32px; font-family: Manrope;"><strong>{{ card_info.price|round_price }} ₽</strong></span>
+                    </div>
+                    <div class="mt-3" style="text-align: right;">
+                        <button class="btn btn-primary w-50 bron">Забронировать</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопка бронирования -->
+    </form>
+</section>
+
+
+<div class="container mt-5 payment-container">
+    <span class="fs-2" style="color: #284356;">Выберите способ оплаты</span>
+
+    <div class="row align-items-start mt-4">
+        <div class="col-lg-8">
+            <span class="fs-4">Российская банковская карта</span>
+            <p class="text-muted">Visa, Mastercard, Мир, SberPay, СБП</p>
+            <p>Оплачивается вся сумма брони.</p>
+            <p>Данный способ оплаты поддерживает платежи только с карт, выпущенных российскими банками, а также с карт платёжной системы Мир, выпущенных банками других стран.</p>
+            <p>Кассовый чек в электронном виде будет предоставлен ООО «Комфорт Букинг». Вы получите его после оплаты на адрес электронной почты, который указали при бронировании. Закрывающие документы, подтверждающие факт проживания и оказания услуг за весь период, вам предоставит средство или объект размещения.</p>
+            <p>Обработка платежей осуществляется процессинговой системой PayAnyWay.</p>
+        </div>
+
+        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+            <img src="{% static 'img/master card.png' %}" alt="MasterCard" class="me-2" height="45">
+            <img src="{% static 'img/visa.png' %}" alt="Visa" class="me-2" height="30">
+            <img src="{% static 'img/mir.png' %}" alt="Мир" height="30">
+        </div>
+    </div>
+</div>
+
+
+
+
+
+    <section class="container my-5 end-container">
+        <span class="fs-2 text-left mb-4">Остались вопросы?</span>
+
+    <p class="text-left mb-4 mt-3">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
+
+    <div class="d-flex justify-content-between align-items-center position-relative">
+        <div>
+            <img src="{% static 'img/image 332.png' %}" alt="Question Image" class="w-100">
+        </div>
+
+        <!-- Форма -->
+        <div class="position-absolute end-0 translate-middle-y w-25 p-3 me-5 bg-white border rounded shadow-sm form-end">
+            <form action="#" method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Имя</label>
+                    <input type="text" class="form-control" id="name" required placeholder="Введите имя">
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Номер телефона</label>
+                    <input type="tel" class="form-control" id="phone" required placeholder="+7">
+                </div>
+                <div class="mb-3">
+                    <label for="question" class="form-label">Сообщение</label>
+                    <textarea class="form-control" id="question" rows="4" required placeholder="Введите текст сообщения"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 form-end-button">Оставить заявку</button>
+            </form>
+        </div>
+    </div>
+</section>
+    <section class="container my-5">
+    <footer class="bg-white py-3 px-5 d-flex justify-content-between align-items-center footer">
+    <div class="nav-container d-flex justify-content-center w-75">
+        <nav>
+            <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
+            <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
+        </nav>
+    </div>
+    <div class="text-end">
+        <div class="d-flex align-items-center justify-content-end">
+            <a href="#" class="me-2 text-primary fs-5">
+                <img src="{% static 'img/telegram.png' %}" alt="telegram" class="img-fluid">
+            </a>
+            <a href="#" class="me-2 text-success fs-5">
+                <img src="{% static 'img/whatsapp.png' %}" alt="whatsapp" class="img-fluid">
+            </a>
+            <p class="mb-0 text-dark ms-2">+7 (900) 123-45-67</p>
+        </div>
+        <div class="text-end d-flex align-items-center justify-content-end mt-3">
+            <span>г. Владивосток</span>
+        </div>
+    </div>
+</footer>
+    </section>
+
+
+
+
+
+
+
+
+    <!-- Подключение Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+

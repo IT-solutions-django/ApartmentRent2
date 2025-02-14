@@ -1,0 +1,339 @@
+{% load static %}
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог | GOSTI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <script src="{% static 'js/main.js' %}" defer></script>
+</head>
+<body>
+
+    <!-- Шапка -->
+    <header class="bg-white shadow-sm py-3 px-5 d-flex justify-content-between align-items-center">
+        <div class="text-center" style="font-size: 36px !important; font-family: 'Aboreto', cursive;"><a href="/">GOSTI<p style="font-size: 12px; vertical-align: bottom;">VLADIVOSTOK</p></a></div>
+        <nav>
+            <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
+            <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3 active-nav">Квартиры</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
+        </nav>
+        <div class="text-end">
+    <div class="d-flex align-items-center justify-content-end">
+        <a href="#" class="me-2 text-primary fs-5">
+            <img src="{% static 'img/telegram.png' %}" alt="telegram" class="img-fluid">
+        </a>
+        <a href="#" class="me-2 text-success fs-5">
+            <img src="{% static 'img/whatsapp.png' %}" alt="whatsapp" class="img-fluid">
+        </a>
+        <p class="mb-0 text-dark ms-2">+7 (900) 123-45-67</p>
+    </div>
+    <div class="text-end d-flex align-items-center justify-content-end mt-3">
+        <a href="#" class="text-dark text-decoration-none me-2">Личный кабинет</a>
+        <i class="bi bi-person fs-5 text-dark"></i>
+    </div>
+</div>
+
+    </header>
+
+
+
+
+    <!-- Рекомендованные предложения -->
+<section class="container mt-5 catalog">
+    <div class="border p-4 mb-4" style="border-radius: 10px !important;">
+        <form class="row g-3">
+            <div class="col-md-4 form-floating">
+                <input type="date" class="form-control" id="check-in-date" required placeholder=" ">
+                <label for="check-in-date" class="form-label">Дата въезда</label>
+            </div>
+            <div class="col-md-4 form-floating">
+                <input type="date" class="form-control" id="check-out-date" required placeholder=" ">
+                <label for="check-out-date" class="form-label">Дата выезда</label>
+            </div>
+            <div class="col-md-4 form-floating">
+                <select class="form-select" id="people-count" required>
+                    <option value="" selected>Выберите количество</option>
+                    <option value="1">1 человек</option>
+                    <option value="2">2 человека</option>
+                    <option value="3">3 человека</option>
+                    <option value="4">4 человека</option>
+                    <option value="5">5 человек</option>
+                    <option value="6">6 человек</option>
+                </select>
+                <label for="people-count" class="form-label">Количество людей</label>
+            </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary w-100 catalog-search">Найти</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <span class="fs-2">Подборка квартир</span>
+
+    </div>
+
+    <div class="row g-4">
+        {% for apart in aparts %}
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <img src="{% static 'img/Photo_1.png' %}" class="card-img-top" alt="Квартира">
+                <div class="card-body">
+                    <h5 class="card-title">{{ apart.name }}</h5>
+                    <p class="card-text text-muted"><i class="bi bi-people fs-6"></i> до {{ apart.quantity_people }} мест • {{ apart.square }} м²</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fs-5">от {{ apart.price|round_price }} ₽ <span class="card-text text-muted fs-6">/ сутки</span></span>
+                        <a href="{% url 'card' apart.id %}" class="btn btn-outline-primary">Выбрать</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+
+
+
+
+        <div class="pagination">
+
+
+                                <a href="?page=1">1</a>
+
+
+
+                                <a href="?page=2">2</a>
+
+
+
+                                <a href="?page=3">3</a>
+
+
+
+                                <span>...</span>
+
+
+
+                                <a href="?page=508">508</a>
+
+
+
+                                <a href="?page=">Следующая</a>
+
+
+                    </div>
+
+    </div>
+</section>
+
+
+
+    <section class="container my-5 position-relative mt-5 reviews-container">
+    <span class="fs-2 text-left mb-4">Отзывы наших гостей</span>
+
+    <div class="text-left mb-4">
+        <span class="fw-bold" style="font-size: 24px; color: #273B7D;">Booking</span>
+        <span class="fw-bold" style="color: #499FDD; font-size: 24px;">.com</span>
+    </div>
+
+    <div class="position-relative">
+        <div class="position-absolute top-0 end-0 d-flex gap-2 review-controls">
+            <button class="arrow" id="prevReview">
+                <img src="{% static 'img/Arrow 2.png' %}" alt="arrow">
+            </button>
+            <button class="arrow" id="nextReview">
+                <img src="{% static 'img/Arrow 1.png' %}" alt="arrow">
+            </button>
+        </div>
+    </div>
+
+    <div class="overflow-hidden w-100 mt-5 position-relative">
+        <div class="d-flex gap-3 flex-nowrap w-100" id="reviewsContainer">
+            <div class="card p-3 shadow-sm flex-grow-1 review-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-1">Отличное место!</h5>
+                    <div class="d-flex">
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                    </div>
+                </div>
+                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
+                <div class="d-flex align-items-center mt-3">
+                    <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
+                    <div>
+                        <strong>Анна.С</strong>
+                        <p class="text-muted small mb-0">22.02.2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-3 shadow-sm flex-grow-1 review-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-1">Отличное место!</h5>
+                    <div class="d-flex">
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                    </div>
+                </div>
+                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
+                <div class="d-flex align-items-center mt-3">
+                    <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
+                    <div>
+                        <strong>Анна.С</strong>
+                        <p class="text-muted small mb-0">22.02.2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-3 shadow-sm flex-grow-1 review-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-1">Отличное место!</h5>
+                    <div class="d-flex">
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                    </div>
+                </div>
+                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
+                <div class="d-flex align-items-center mt-3">
+                    <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
+                    <div>
+                        <strong>Анна.С</strong>
+                        <p class="text-muted small mb-0">22.02.2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-3 shadow-sm flex-grow-1 review-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-1">Отличное место!</h5>
+                    <div class="d-flex">
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                    </div>
+                </div>
+                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
+                <div class="d-flex align-items-center mt-3">
+                    <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
+                    <div>
+                        <strong>Анна.С</strong>
+                        <p class="text-muted small mb-0">22.02.2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-3 shadow-sm flex-grow-1 review-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-1">Отличное место!</h5>
+                    <div class="d-flex">
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                        <i class="bi bi-star-fill text-warning fs-5"></i>
+                    </div>
+                </div>
+                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
+                <div class="d-flex align-items-center mt-3">
+                    <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
+                    <div>
+                        <strong>Анна.С</strong>
+                        <p class="text-muted small mb-0">22.02.2025</p>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</section>
+
+
+
+    <section class="container my-5 end-container">
+        <span class="fs-2 text-left mb-4">Остались вопросы?</span>
+
+    <p class="text-left mb-4 mt-3">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
+
+    <div class="d-flex justify-content-between align-items-center position-relative">
+        <div>
+            <img src="{% static 'img/image 332.png' %}" alt="Question Image" class="w-100">
+        </div>
+
+        <!-- Форма -->
+        <div class="position-absolute end-0 translate-middle-y w-25 p-3 me-5 bg-white border rounded shadow-sm form-end">
+            <form action="#" method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Имя</label>
+                    <input type="text" class="form-control" id="name" required placeholder="Введите имя">
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Номер телефона</label>
+                    <input type="email" class="form-control" id="email" required placeholder="+7">
+                </div>
+                <div class="mb-3">
+                    <label for="question" class="form-label">Сообщение</label>
+                    <textarea class="form-control" id="question" rows="4" required placeholder="Введите текст сообщения"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 form-end-button">Оставить заявку</button>
+            </form>
+        </div>
+    </div>
+</section>
+    <section class="container my-5">
+    <footer class="bg-white py-3 px-5 d-flex justify-content-between align-items-center footer">
+    <div class="nav-container d-flex justify-content-center w-75">
+        <nav>
+            <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
+            <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
+        </nav>
+    </div>
+    <div class="text-end">
+        <div class="d-flex align-items-center justify-content-end">
+            <a href="#" class="me-2 text-primary fs-5">
+                <img src="{% static 'img/telegram.png' %}" alt="telegram" class="img-fluid">
+            </a>
+            <a href="#" class="me-2 text-success fs-5">
+                <img src="{% static 'img/whatsapp.png' %}" alt="whatsapp" class="img-fluid">
+            </a>
+            <p class="mb-0 text-dark ms-2">+7 (900) 123-45-67</p>
+        </div>
+        <div class="text-end d-flex align-items-center justify-content-end mt-3">
+            <span>г. Владивосток</span>
+        </div>
+    </div>
+</footer>
+    </section>
+
+
+
+
+
+
+
+
+    <!-- Подключение Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
