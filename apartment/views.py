@@ -7,7 +7,7 @@ from apartment.models import Apartment, Booking
 from django.http import JsonResponse
 from .utils.send_tg import send_telegram_message
 import json
-from rent.tasks import send_telegram_message
+from .tasks import send_telegram_message
 
 
 def main(request):
