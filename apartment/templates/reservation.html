@@ -10,19 +10,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{% static 'js/reservation.js' %}" defer></script>
 </head>
 <body>
 
     <!-- Шапка -->
-    <header class="bg-white shadow-sm py-3 px-5 d-flex justify-content-between align-items-center">
+    <header class="bg-white py-2 px-5 d-flex justify-content-between align-items-center">
+        <div class="container d-flex justify-content-between align-items-center">
         <div class="text-center" style="font-size: 36px !important; font-family: 'Aboreto', cursive;"><a href="/">GOSTI<p style="font-size: 12px; vertical-align: bottom;">VLADIVOSTOK</p></a></div>
         <nav>
             <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
             <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="/#reviews" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#questions" class="text-dark text-decoration-none mx-3">Вопросы</a>
             <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
         </nav>
         <div class="text-end">
@@ -35,12 +40,75 @@
         </a>
         <p class="mb-0 text-dark ms-2">+7 (900) 123-45-67</p>
     </div>
+    {% if user.is_authenticated %}
     <div class="text-end d-flex align-items-center justify-content-end mt-3">
-        <a href="#" class="text-dark text-decoration-none me-2">Личный кабинет</a>
+        <a href="#" class="text-dark text-decoration-none me-2" id="profileLink">Личный кабинет</a>
         <i class="bi bi-person fs-5 text-dark"></i>
     </div>
+            {% else %}
+    <div class="text-end d-flex align-items-center justify-content-end mt-3">
+        <a href="{% url 'login' %}" class="text-dark text-decoration-none me-2">Личный кабинет</a>
+        <i class="bi bi-person fs-5 text-dark"></i>
+    </div>
+            {% endif %}
 </div>
+        </div>
+        <!-- Шторка -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-content mt-5 text-center">
+            <span class=" fs-5 text-center">Рады видеть вас вновь</span>
+            {% if user.is_authenticated %}
+            <p>{{ user.username }}</p>
+            {% endif %}
+        </div>
+        <div class="sidebar-content mt-5" style="text-align: left;">
+            <span class=" fs-6">Бронирования</span>
+            <hr>
+            {% if active_bookings %}
+            {% for booking in active_bookings %}
+            <div class="active-booking">
+                <div class="row mb-3">
+                <div class="col-12">
+                    <a href="{% url 'card' booking.apartment.id %}">
+                        <img src="{% static 'img/Frame 610.png' %}" alt="Фото квартиры" class="img-fluid">
+                    </a>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'card' booking.apartment.id %}" class="fs-6">{{ booking.apartment.name }}</a>
+                            <span class="text-muted"><i class="bi bi-people fs-6"></i> до {{ booking.apartment.quantity_people }} мест</span>
+                            <span class="text-muted"><i class="bi bi-arrows-angle-contract"></i> {{ booking.apartment.square }} м²</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <span><strong>Заезд:</strong> {{ booking.start_date|date:"d-m-Y" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <span><strong>Выезд:</strong> {{ booking.end_date|date:"d-m-Y" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-5">
+                            <span>Стоимость</span>
+                            <span>{{ booking.total_price|round_price }} ₽ <span class="card-text text-muted fs-6">/ {{ booking.get_total_days }} суток</span></span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Нет активных бронирований</p>
+        {% endif %}
+        </div>
+        <div class="sidebar-content text-center">
+            <a href="{% url 'logout' %}" id="logoutLink" class="text-dark">
+                <i class="bi bi-box-arrow-right fs-4 me-1"></i> Выйти
+            </a>
+        </div>
+        <button id="closeSidebar" class="btn-close"></button>
+    </div>
 
+    <div id="overlay" class="overlay"></div>
     </header>
 
 
@@ -48,18 +116,18 @@
 
 <section class="container mt-5 reservation">
     <div class="row">
-        <div class="col-md-6">
-            <span class="fs-2 d-block" style="color: #284356;">Введите свои данные</span>
+        <div class="col-md-4">
+            <span class="fs-2 d-block" style="color: #284356; font-size: 32px !important; font-weight: 500;">Введите свои данные</span>
             <hr class="mt-1">
         </div>
     </div>
 
 
-    <form method="post">
+    <form id="booking-form" method="post" data-card-id="{{ card_info.id }}">
         {% csrf_token %}
         <div class="row">
             <!-- Левая часть: Поля формы -->
-            <div class="col-md-6">
+            <div class="col-md-4 reservation-form-contact">
                 <div class="row mt-4">
                     <div class="col-md-6">
                         {{ form.surname }}
@@ -85,30 +153,39 @@
             </div>
 
             <!-- Правая часть: Информация о бронировании -->
-            <div class="col-md-5 ms-auto">
+            <div class="col-md-6 ms-auto">
                 <div class="border p-3 info-bron">
-                    <span class="fs-4" style="color: #284356;">Ваше бронирование</span>
+                    <span class="fs-4" style="color: #284356; font-size: 32px !important; font-weight: 500;">Ваше бронирование</span>
                     <p id="days-count">1 сутки</p>
                     <div class="row">
-                        <div class="col-md-4">
-                            <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " value="{{ date_now }}">
+                        <div class="col-md-4 mt-4">
+                            {% if date_in %}
+                            <input type="text" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " value="{{ date_in }}">
+                            {% else %}
+                            <input type="text" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " value="{{ date_now }}">
+                            {% endif %}
                         </div>
-                        <div class="col-md-4">
-                            <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " value="{{ date_tomorrow }}">
+                        <div class="col-md-4 mt-4">
+                            {% if date_out %}
+                            <input type="text" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " value="{{ date_out }}">
+                            {% else %}
+                            <input type="text" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " value="{{ date_tomorrow }}">
+                            {% endif %}
                         </div>
                     </div>
-                    <p class="text-muted mb-4" style="font-size: 13px;"><span class="ms-1">С 12:00</span> <span style="margin-left: 120px;">До 14:00</span></p>
-
-                    <span style="font-size: 22px;">{{ card_info.name }}</span>
-                    <span class="card-text text-muted ms-4"><i class="bi bi-people fs-6"></i> до {{ card_info.quantity_people }} мест</span>
-                    <span class="text-muted ms-4"><i class="bi bi-arrows-angle-contract"></i> {{ card_info.square }} м²</span>
+                    <p class="text-muted mb-4" style="font-size: 16px; color: #A8A7A7 !important;"><span class="ms-1">С 14:00</span> <span style="margin-left: 150px; color: #A8A7A7 !important;">До 12:00</span></p>
+                    <div class="reservation-apart-info">
+                    <span style="font-size: 24px; font-weight: 500;">{{ card_info.name }}</span>
+                    <span class="card-text text-muted ms-4"><i class="bi bi-people fs-6" style="color: #A8A7A7 !important;"></i> до {{ card_info.quantity_people }} мест</span>
+                    <span class="text-muted ms-4"><i class="bi bi-arrows-angle-contract" style="color: #A8A7A7 !important;"></i> {{ card_info.square }} м²</span>
+                    </div>
                     <hr>
-                    <div class="d-flex justify-content-between mt-5">
-                        <span style="font-size: 24px;">К оплате:</span>
-                        <span style="font-size: 32px; font-family: Manrope;"><strong>{{ card_info.price|round_price }} ₽</strong></span>
+                    <div class="d-flex justify-content-between mt-5 reservation-block-price">
+                        <span style="font-size: 24px; font-weight: 500;">К оплате:</span>
+                        <span style="font-size: 32px; font-family: Manrope;"><strong id="total-price" data-default-price="{{ card_info.price|round_price }}">{{ card_info.price|round_price }}</strong></span>
                     </div>
                     <div class="mt-3" style="text-align: right;">
-                        <button class="btn btn-primary w-50 bron">Забронировать</button>
+                        <button class="btn btn-primary w-50 bron" style="font-weight: 500;">Забронировать</button>
                     </div>
                 </div>
             </div>
@@ -120,16 +197,16 @@
 
 
 <div class="container mt-5 payment-container">
-    <span class="fs-2" style="color: #284356;">Выберите способ оплаты</span>
+    <span class="fs-2" style="color: #284356; font-size: 32px !important; font-weight: 500;">Выберите способ оплаты</span>
 
     <div class="row align-items-start mt-4">
         <div class="col-lg-8">
-            <span class="fs-4">Российская банковская карта</span>
-            <p class="text-muted">Visa, Mastercard, Мир, SberPay, СБП</p>
-            <p>Оплачивается вся сумма брони.</p>
-            <p>Данный способ оплаты поддерживает платежи только с карт, выпущенных российскими банками, а также с карт платёжной системы Мир, выпущенных банками других стран.</p>
-            <p>Кассовый чек в электронном виде будет предоставлен ООО «Комфорт Букинг». Вы получите его после оплаты на адрес электронной почты, который указали при бронировании. Закрывающие документы, подтверждающие факт проживания и оказания услуг за весь период, вам предоставит средство или объект размещения.</p>
-            <p>Обработка платежей осуществляется процессинговой системой PayAnyWay.</p>
+            <span class="fs-4" style="font-weight: 600;">Российская банковская карта</span>
+            <p class="text-muted" style="color: #A8A7A7 !important;">Visa, Mastercard, Мир, SberPay, СБП</p>
+            <p style="font-size: 20px;">Оплачивается вся сумма брони.</p>
+            <p style="font-size: 20px;">Данный способ оплаты поддерживает платежи только с карт, выпущенных российскими банками, а также с карт платёжной системы Мир, выпущенных банками других стран.</p>
+            <p style="font-size: 20px;">Кассовый чек в электронном виде будет предоставлен ООО «Комфорт Букинг». Вы получите его после оплаты на адрес электронной почты, который указали при бронировании. Закрывающие документы, подтверждающие факт проживания и оказания услуг за весь период, вам предоставит средство или объект размещения.</p>
+            <p style="font-size: 20px;">Обработка платежей осуществляется процессинговой системой PayAnyWay.</p>
         </div>
 
         <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
@@ -144,10 +221,10 @@
 
 
 
-    <section class="container my-5 end-container">
-        <span class="fs-2 text-left mb-4">Остались вопросы?</span>
+    <section class="container my-5 end-container" id="questions">
+        <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Остались вопросы?</span>
 
-    <p class="text-left mb-4 mt-3">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
+    <p class="text-left mb-5 mt-4" style="margin-bottom: 80px !important; font-weight: 500; font-size: 20px;">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
 
     <div class="d-flex justify-content-between align-items-center position-relative">
         <div>
@@ -158,16 +235,16 @@
         <div class="position-absolute end-0 translate-middle-y w-25 p-3 me-5 bg-white border rounded shadow-sm form-end">
             <form action="#" method="POST">
                 <div class="mb-3">
-                    <label for="name" class="form-label">Имя</label>
-                    <input type="text" class="form-control" id="name" required placeholder="Введите имя">
+                    <label for="name" class="form-label" style="font-size: 20px; font-weight: 500;">Имя</label>
+                    <input type="text" class="form-control" id="name" required placeholder="Введите имя" style="padding: 10px 20px;">
                 </div>
                 <div class="mb-3">
-                    <label for="phone" class="form-label">Номер телефона</label>
-                    <input type="tel" class="form-control" id="phone" required placeholder="+7">
+                    <label for="phone" class="form-label" style="font-size: 20px; font-weight: 500;">Номер телефона</label>
+                    <input type="tel" class="form-control" id="phone" required placeholder="+7" style="padding: 10px 20px;">
                 </div>
                 <div class="mb-3">
-                    <label for="question" class="form-label">Сообщение</label>
-                    <textarea class="form-control" id="question" rows="4" required placeholder="Введите текст сообщения"></textarea>
+                    <label for="question" class="form-label" style="font-size: 20px; font-weight: 500;">Сообщение</label>
+                    <textarea class="form-control" id="question" rows="4" required placeholder="Введите текст сообщения" style="padding: 10px 20px;"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 form-end-button">Оставить заявку</button>
             </form>
@@ -180,8 +257,8 @@
         <nav>
             <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
             <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="/#reviews" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#questions" class="text-dark text-decoration-none mx-3">Вопросы</a>
             <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
         </nav>
     </div>
@@ -200,6 +277,21 @@
         </div>
     </div>
 </footer>
+        <div class="modal fade" id="loginErrorModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reservationModalLabel">Сообщение</h5>
+            </div>
+            <div class="modal-body" id="modalMessage">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="redirectButton" style="display:none;">Перейти к каталогу</button>
+            </div>
+        </div>
+    </div>
+</div>
     </section>
 
 
@@ -211,6 +303,29 @@
 
     <!-- Подключение Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const bookedDates = JSON.parse('{{ booked_dates|escapejs }}');
+
+    flatpickr("#check-in-date", {
+        dateFormat: "Y-m-d",
+        minDate: "{{ date_now }}",
+        disable: bookedDates,
+        onChange: function (selectedDates, dateStr) {
+            let nextDay = new Date(dateStr);
+            nextDay.setDate(nextDay.getDate() + 1);
+            checkOutPicker.set("minDate", dateStr);
+            checkOutPicker.set("minDate", nextDay.toISOString().split('T')[0]);
+        }
+    });
+
+    const checkOutPicker = flatpickr("#check-out-date", {
+        dateFormat: "Y-m-d",
+        minDate: "{{ date_tomorrow }}",
+        disable: bookedDates
+    });
+});
+</script>
 </body>
 </html>
 

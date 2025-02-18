@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from apartment.views import main, catalog, card, reservation
+from user.views import login_view, register_view, logout_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +25,7 @@ urlpatterns = [
     path('catalog/', catalog, name='catalog'),
     path('card/<int:card_id>/', card, name='card'),
     path('reservation/<int:card_id>/', reservation, name='reservation'),
+    path('login/', login_view, name='login'),
+    path('register/', register_view, name='register'),
+    path('logout/', logout_view, name='logout'),
 ]

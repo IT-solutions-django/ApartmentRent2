@@ -7,8 +7,9 @@ header {
 }
 
 body {
-    margin-top: 120px;
+    margin-top: 80px;
     background-color: white;
+    font-family: 'Manrope', sans-serif;
 }
 
 .banner {
@@ -63,6 +64,8 @@ body {
     background-color: #284356 !important;
     border-color: #284356 !important;
     border-radius: 10px !important;
+    font-size: 20px;
+    padding: 10px 20px !important;
 }
 
 .watch-apart:active {
@@ -84,6 +87,7 @@ body {
     background-color: #284356 !important;
     border-color: #284356 !important;
     height: 58px !important;
+    font-size: 20px;
 }
 
 .reserve:active {
@@ -151,6 +155,10 @@ body {
     transition: transform 0.3s ease;
 }
 
+.review-card {
+    height: 333px;
+}
+
 .card {
     flex: 0 0 32%;
     box-sizing: border-box;
@@ -186,8 +194,8 @@ body {
 }
 
 .accordion-button:not(.collapsed) {
-    background-color: transparent;
-    color: #000;
+    background-color: #284356 !important;
+    color: white;
 }
 
 .accordion-button:not(.collapsed) {
@@ -207,6 +215,7 @@ body {
 .form-end-button{
     background-color: #284356 !important;
     border-color: #284356 !important;
+    padding: 10px 20px;
 }
 
 .form-end-button:hover {
@@ -222,6 +231,8 @@ body {
     background-color: rgba(255, 255, 255, 0) !important;
     border-color: white !important;
     border-radius: 10px !important;
+    font-size: 20px;
+    padding: 10px 20px;
 }
 
 .watch-button-banner:hover {
@@ -266,46 +277,6 @@ nav a:hover::after {
     border-color: #5f6a73 !important;
 }
 
-.pagination {
-    padding: 4px;
-    gap: 2px;
-    border-radius: 10px !important;
-    display: flex;
-    background-color: white;
-    width: max-content;
-    height:max-content;
-    margin-left: auto;
-    border: 1px solid #284356;
-}
-
-.pagination a, .pagination span {
-    padding-inline: 5px;
-    min-width: 31px;
-    height: 31px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: black;
-    transition: background-color .2s ease-in-out;
-    border-radius:48px;
-    text-decoration: none;
-}
-
-.pagination a:hover {
-    background-color:#284356;
-    color: white;
-}
-
-.pagination .current-page {
-    background-color:#284356;
-    color: white;
-}
-
-.pagination .active-page {
-    background-color:#284356;
-    color: white;
-}
-
 .services-apart {
     padding: 10px !important;
 }
@@ -317,6 +288,8 @@ nav a:hover::after {
 .bron {
     background-color: #284356 !important;
     border-color: #284356 !important;
+    font-size: 16px;
+    padding: 10px 20px;
 }
 
 .bron:hover {
@@ -336,8 +309,225 @@ a {
 .info-bron {
     border-radius: 10px !important;
     border: 1px solid #284356 !important;
+    height: 506px;
+    margin-top: -60px;
 }
 
 .payment-container {
-    margin-top: 150px !important;
+    margin-top: 120px !important;
+}
+
+.login-container {
+    margin-top: 80px !important;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.login-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/static/img/e9ea8783c07a8e1dc43b22eb5aa77793.jpeg');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(40%);
+    z-index: -1;
+}
+
+.login-content {
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.login-button {
+    background-color: white !important;
+    border-color: white !important;
+    color: black;
+    padding: 20px !important;
+}
+
+.login-button:hover {
+    color: black;
+}
+
+.register-button-login {
+    background-color: transparent !important;
+    border: 1px solid white !important;
+    padding: 20px !important;
+}
+
+.register-button-login:hover {
+    background-color: white !important;
+    color: black;
+}
+
+.login-content .form-control {
+    background-color: transparent !important;
+    color: #A8A7A7 !important;
+    padding: 20px !important;
+}
+
+.form-control::placeholder {
+    color: #A8A7A7 !important;
+}
+
+.login-content .form-control::placeholder {
+  color: #A8A7A7 !important;
+}
+
+.login-content .form-control::-webkit-input-placeholder {
+  color: #A8A7A7 !important;
+}
+
+.login-content .form-control::-moz-placeholder {
+  color: #A8A7A7 !important;
+}
+
+.login-content .form-control:-ms-input-placeholder {
+  color: #A8A7A7 !important;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -370px;
+    width: 370px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.3);
+    transition: right 0.3s ease;
+    z-index: 1001;
+    overflow-y: auto;
+}
+
+.sidebar-content {
+    padding: 20px;
+    position: relative;
+}
+
+#closeSidebar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    color: #333;
+    cursor: pointer;
+}
+
+.sidebar.open {
+    right: 0;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    z-index: 1000;
+}
+
+.overlay.show {
+    display: block;
+}
+
+#logoutLink {
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+textarea {
+    height: 156px !important;
+}
+
+#loginErrorModal .modal-header {
+    background-color: #284356 !important;
+    color: white !important;
+    justify-content: center !important;
+}
+
+#loginErrorModal #error-messages {
+    text-align: center;
+}
+
+#loginErrorModal #modalMessage {
+    text-align: center;
+}
+
+#loginErrorModal .modal-footer {
+    justify-content: center;
+}
+
+#loginErrorModal button {
+    background-color: white;
+    color: #284356 !important;
+    border: 1px solid #284356 !important;
+}
+
+#loginErrorModal button:hover {
+    background-color: #284356 !important;
+    color: white !important;
+}
+
+.form-control:focus {
+    border-color: #284356 !important;
+    box-shadow: none !important;
+}
+
+.form-select:focus {
+    border-color: #284356 !important;
+    box-shadow: none !important;
+}
+
+.img-apart {
+    width: 100% !important;
+    height: 470px !important;
+    border-radius: 10px !important;
+}
+
+.card-apart-main {
+    border: none;
+    box-shadow: none !important;
+}
+
+.card-apart-catalog {
+    border: none;
+    box-shadow: none !important;
+}
+
+.card-desc-apart {
+    margin-top: 13px !important;
+}
+
+.card-apart-block-price {
+    margin-top: 23px !important;
+}
+
+.reservation-block-price {
+    margin-top: 85px !important;
+}
+
+#days-count {
+    margin-top: 7px;
+}
+
+.reservation-apart-info {
+    margin-top: 40px;
+}
+
+.reservation-form-contact input, .reservation-form-contact textarea {
+    border-color: #284356 !important;
 }

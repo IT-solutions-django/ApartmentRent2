@@ -10,19 +10,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
     <script src="{% static 'js/main.js' %}" defer></script>
 </head>
 <body>
 
     <!-- Шапка -->
-    <header class="bg-white shadow-sm py-3 px-5 d-flex justify-content-between align-items-center">
+    <header class="bg-white py-2 px-5 d-flex justify-content-between align-items-center">
+        <div class="container d-flex justify-content-between align-items-center">
         <div class="text-center" style="font-size: 36px !important; font-family: 'Aboreto', cursive;"><a href="/">GOSTI<p style="font-size: 12px; vertical-align: bottom;">VLADIVOSTOK</p></a></div>
         <nav>
             <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
             <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="#reviews" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#questions" class="text-dark text-decoration-none mx-3">Вопросы</a>
             <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
         </nav>
         <div class="text-end">
@@ -35,12 +37,75 @@
         </a>
         <p class="mb-0 text-dark ms-2">+7 (900) 123-45-67</p>
     </div>
+    {% if user.is_authenticated %}
     <div class="text-end d-flex align-items-center justify-content-end mt-3">
-        <a href="#" class="text-dark text-decoration-none me-2">Личный кабинет</a>
+        <a href="#" class="text-dark text-decoration-none me-2" id="profileLink">Личный кабинет</a>
         <i class="bi bi-person fs-5 text-dark"></i>
     </div>
+            {% else %}
+    <div class="text-end d-flex align-items-center justify-content-end mt-3">
+        <a href="{% url 'login' %}" class="text-dark text-decoration-none me-2">Личный кабинет</a>
+        <i class="bi bi-person fs-5 text-dark"></i>
+    </div>
+            {% endif %}
 </div>
+        </div>
+        <!-- Шторка -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-content mt-5 text-center">
+            <span class=" fs-5 text-center">Рады видеть вас вновь</span>
+            {% if user.is_authenticated %}
+            <p>{{ user.username }}</p>
+            {% endif %}
+        </div>
+        <div class="sidebar-content mt-5" style="text-align: left;">
+            <span class=" fs-6">Бронирования</span>
+            <hr>
+            {% if active_bookings %}
+            {% for booking in active_bookings %}
+            <div class="active-booking">
+                <div class="row mb-3">
+                <div class="col-12">
+                    <a href="{% url 'card' booking.apartment.id %}">
+                        <img src="{% static 'img/Frame 610.png' %}" alt="Фото квартиры" class="img-fluid">
+                    </a>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'card' booking.apartment.id %}" class="fs-6">{{ booking.apartment.name }}</a>
+                            <span class="text-muted"><i class="bi bi-people fs-6"></i> до {{ booking.apartment.quantity_people }} мест</span>
+                            <span class="text-muted"><i class="bi bi-arrows-angle-contract"></i> {{ booking.apartment.square }} м²</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <span><strong>Заезд:</strong> {{ booking.start_date|date:"d-m-Y" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <span><strong>Выезд:</strong> {{ booking.end_date|date:"d-m-Y" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-5">
+                            <span>Стоимость</span>
+                            <span>{{ booking.total_price|round_price }} ₽ <span class="card-text text-muted fs-6">/ {{ booking.get_total_days }} суток</span></span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Нет активных бронирований</p>
+        {% endif %}
+        </div>
+        <div class="sidebar-content text-center">
+            <a href="{% url 'logout' %}" id="logoutLink" class="text-dark">
+                <i class="bi bi-box-arrow-right fs-4 me-1"></i> Выйти
+            </a>
+        </div>
+        <button id="closeSidebar" class="btn-close"></button>
+    </div>
 
+    <div id="overlay" class="overlay"></div>
     </header>
 
 
@@ -48,26 +113,74 @@
     <!-- Название, цена и кнопка забронировать -->
     <div class="row mb-4">
         <div class="col-md-8">
-            <span class="fs-1">{{ card_info.name }}</span>
+            <span class="fs-1" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">{{ card_info.name }}</span>
         </div>
         <div class="col-md-4 d-flex justify-content-end align-items-center">
-            <span class="fs-5">от {{ card_info.price|round_price }} ₽ <span class="card-text text-muted fs-6">/ сутки</span></span>
-            <a href="{% url 'reservation' card_info.id %}" class="btn btn-primary ms-3 bron">Забронировать</a>
+            <span class="fs-5">от {{ card_info.price|round_price }} ₽ <span class="card-text text-muted fs-6" style="color: #A8A7A7 !important;">/ сутки</span></span>
+            <a href="{% url 'reservation' card_info.id %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" class="btn btn-primary ms-3 bron">Забронировать</a>
         </div>
     </div>
 
     <!-- Фотография квартиры -->
     <div class="row mb-4">
         <div class="col-12">
-            <img src="{% static 'img/Photo.png' %}" class="img-fluid" alt="Фотография квартиры">
+            <img src="{% static 'img/dd833549778fda5fa072923a295ebb30.jpeg' %}" class="img-fluid img-apart" alt="Фотография квартиры">
         </div>
     </div>
 
+<!--        <div class="row mb-4">-->
+<!--        <div class="col-2">-->
+<!--            <img src="{% static 'img/Photo.png' %}" class="img-thumbnail" alt="Фото 1"-->
+<!--                 data-bs-toggle="modal" data-bs-target="#imageModal" style="cursor: pointer;">-->
+<!--        </div>-->
+<!--        <div class="col-2">-->
+<!--            <img src="{% static 'img/Photo.png' %}" class="img-thumbnail" alt="Фото 2"-->
+<!--                 data-bs-toggle="modal" data-bs-target="#imageModal" style="cursor: pointer;">-->
+<!--        </div>-->
+<!--        <div class="col-2">-->
+<!--            <img src="{% static 'img/Photo.png' %}" class="img-thumbnail" alt="Фото 3"-->
+<!--                 data-bs-toggle="modal" data-bs-target="#imageModal" style="cursor: pointer;">-->
+<!--        </div>-->
+<!--        <div class="col-2">-->
+<!--            <img src="{% static 'img/Photo.png' %}" class="img-thumbnail" alt="Фото 4"-->
+<!--                 data-bs-toggle="modal" data-bs-target="#imageModal" style="cursor: pointer;">-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--        <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">-->
+<!--    <div class="modal-dialog modal-lg modal-dialog-centered">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-body">-->
+<!--                <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">-->
+<!--                    <div class="carousel-inner">-->
+<!--                        <div class="carousel-item active">-->
+<!--                            <img src="{% static 'img/Photo.png' %}" class="d-block w-100" alt="Фотография квартиры" style="height: 400px;">-->
+<!--                        </div>-->
+<!--                        <div class="carousel-item">-->
+<!--                            <img src="{% static 'img/Photo.png' %}" class="d-block w-100" alt="Фотография квартиры" style="height: 400px;">-->
+<!--                        </div>-->
+<!--                        <div class="carousel-item">-->
+<!--                            <img src="{% static 'img/Photo.png' %}" class="d-block w-100" alt="Фотография квартиры" style="height: 400px;">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; Кнопки управления &ndash;&gt;-->
+<!--                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">-->
+<!--                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>-->
+<!--                    </button>-->
+<!--                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">-->
+<!--                        <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
+<!--                    </button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
     <!-- Описание квартиры -->
-    <div class="row mb-4">
+    <div class="row mb-2">
         <div class="col-12">
-            <p class="card-text"><i class="bi bi-people fs-6"></i> Вместимость до {{ card_info.quantity_people }} мест. <span class="text-muted">Один ребёнок до 6 лет — можно без спального места.</span></p>
-            <p class="text-muted"><i class="bi bi-arrows-angle-contract"></i> {{ card_info.square }} м²</p>
+            <p class="card-text" style="font-weight: 600; font-size: 20px;"><i class="bi bi-people fs-5"></i> Вместимость до {{ card_info.quantity_people }} мест. <span class="text-muted" style="font-weight: 500; color: #A8A7A7 !important;">Один ребёнок до 6 лет — можно без спального места.</span></p>
+            <p class="text-muted" style="font-size: 20px; color: #A8A7A7 !important;"><i class="bi bi-arrows-angle-contract"></i> {{ card_info.square }} м²</p>
         </div>
     </div>
 
@@ -110,7 +223,7 @@
     <!-- Перечень удобств -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <h5>Размещение с питомцами</h5>
+            <h5 style="font-weight: 600;">Размещение с питомцами</h5>
             <div class="d-flex align-items-center mt-3">
                 <img src="{% static 'img/pets_2.png' %}" alt="Wi-Fi" class="me-2" style="width: 20px; height: 20px;">
                 <span>Можно с питомцами</span>
@@ -118,7 +231,7 @@
             <p class="text-muted mt-3">В квартире разрешено проживание с домашними животными весом до 8 кг. Стоимость составляет 1000р/сутки</p>
         </div>
         <div class="col-md-3 ms-auto">
-            <h5>Ванная комната</h5>
+            <h5 style="font-weight: 600;">Ванная комната</h5>
             <div class="d-flex align-items-center mt-3">
                 <img src="{% static 'img/Shower.png' %}" alt="Shower" class="me-2" style="width: 20px; height: 20px;">
                 <span>Душевая кабина</span>
@@ -129,14 +242,14 @@
             </div>
         </div>
         <div class="col-md-3">
-            <h5>Интернет</h5>
+            <h5 style="font-weight: 600;">Интернет</h5>
             <div class="d-flex align-items-center mt-3">
                 <img src="{% static 'img/wifi.png' %}" alt="Wi-Fi" class="me-2" style="width: 20px; height: 20px;">
                 <span>Wi-Fi</span>
             </div>
         </div>
         <div class="col-md-2">
-            <h5>TV</h5>
+            <h5 style="font-weight: 600;">TV</h5>
             <div class="d-flex align-items-center mt-3">
                 <img src="{% static 'img/TV.png' %}" alt="TV" class="me-2" style="width: 20px; height: 20px;">
                 <span>Телевизор</span>
@@ -148,10 +261,10 @@
 
 
 
-    <section class="container my-5 position-relative mt-5 reviews-container">
-    <span class="fs-2 text-left mb-4">Отзывы наших гостей</span>
+    <section class="container my-5 position-relative mt-5 reviews-container" id="reviews" style="margin-top: 100px !important;">
+    <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Отзывы наших гостей</span>
 
-    <div class="text-left mb-4">
+    <div class="text-left mb-4" style="margin-top: 20px;">
         <span class="fw-bold" style="font-size: 24px; color: #273B7D;">Booking</span>
         <span class="fw-bold" style="color: #499FDD; font-size: 24px;">.com</span>
     </div>
@@ -167,11 +280,11 @@
         </div>
     </div>
 
-    <div class="overflow-hidden w-100 mt-5 position-relative">
+    <div class="overflow-hidden w-100 mt-5 position-relative" style="margin-top: 60px !important;">
         <div class="d-flex gap-3 flex-nowrap w-100" id="reviewsContainer">
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -180,8 +293,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -192,7 +305,7 @@
 
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -201,8 +314,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -213,7 +326,7 @@
 
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -222,8 +335,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -234,7 +347,7 @@
 
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -243,8 +356,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -255,7 +368,7 @@
 
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -264,8 +377,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -281,10 +394,10 @@
 
 
 
-    <section class="container my-5 end-container">
-        <span class="fs-2 text-left mb-4">Остались вопросы?</span>
+    <section class="container my-5 end-container" id="questions">
+        <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Остались вопросы?</span>
 
-    <p class="text-left mb-4 mt-3">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
+    <p class="text-left mb-4 mt-3" style="margin-bottom: 80px !important; font-weight: 500; font-size: 20px;">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
 
     <div class="d-flex justify-content-between align-items-center position-relative">
         <div>
@@ -295,16 +408,16 @@
         <div class="position-absolute end-0 translate-middle-y w-25 p-3 me-5 bg-white border rounded shadow-sm form-end">
             <form action="#" method="POST">
                 <div class="mb-3">
-                    <label for="name" class="form-label">Имя</label>
-                    <input type="text" class="form-control" id="name" required placeholder="Введите имя">
+                    <label for="name" class="form-label" style="font-size: 20px; font-weight: 500;">Имя</label>
+                    <input type="text" class="form-control" id="name" required placeholder="Введите имя" style="padding: 10px 20px;">
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Номер телефона</label>
-                    <input type="email" class="form-control" id="email" required placeholder="+7">
+                    <label for="email" class="form-label" style="font-size: 20px; font-weight: 500;">Номер телефона</label>
+                    <input type="email" class="form-control" id="email" required placeholder="+7" style="padding: 10px 20px;">
                 </div>
                 <div class="mb-3">
-                    <label for="question" class="form-label">Сообщение</label>
-                    <textarea class="form-control" id="question" rows="4" required placeholder="Введите текст сообщения"></textarea>
+                    <label for="question" class="form-label" style="font-size: 20px; font-weight: 500;">Сообщение</label>
+                    <textarea class="form-control" id="question" rows="4" required placeholder="Введите текст сообщения" style="padding: 10px 20px;"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 form-end-button">Оставить заявку</button>
             </form>
@@ -317,8 +430,8 @@
         <nav>
             <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
             <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="#reviews" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#questions" class="text-dark text-decoration-none mx-3">Вопросы</a>
             <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
         </nav>
     </div>

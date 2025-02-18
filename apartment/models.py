@@ -29,6 +29,29 @@ class Booking(models.Model):
     start_date = models.DateField(verbose_name='Дата въезда')
     end_date = models.DateField(verbose_name='Дата отъезда')
     data_booking = models.ForeignKey(DataBooking, on_delete=models.CASCADE, verbose_name='Данные бронирования')
+    total_price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Итоговая стоимость", default=0)
+
+    def save(self, *args, **kwargs):
+        if self.start_date and self.end_date and self.apartment:
+            num_days = (self.end_date - self.start_date).days
+            self.total_price = self.apartment.price * num_days if num_days > 0 else 0
+        super().save(*args, **kwargs)
+
+    def get_total_days(self):
+        return (self.end_date - self.start_date).days
+
+    class BookingStatus(models.TextChoices):
+        PENDING = 'P', 'Ожидает'
+        CONFIRMED = 'C', 'Подтверждено'
+        CANCELED = 'X', 'Отменено'
+        COMPLETED = 'D', 'Завершено'
+
+    status = models.CharField(
+        max_length=1,
+        choices=BookingStatus.choices,
+        default=BookingStatus.PENDING,
+        verbose_name='Статус'
+    )
 
     def __str__(self):
-        return f'{self.user.username} - {self.apartment.name} ({self.start_date} to {self.end_date})'
+        return f'Пользователь: {self.user.username}. Дата бронирования: {self.start_date} - {self.end_date}. Статус: {self.status}'

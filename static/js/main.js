@@ -46,4 +46,29 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
+const profileLink = document.getElementById('profileLink');
+const sidebar = document.getElementById('sidebar');
+const closeSidebar = document.getElementById('closeSidebar');
+const overlay = document.getElementById('overlay');
+
+if (profileLink) {
+    profileLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        sidebar.classList.add('open');
+        overlay.classList.add('show');
+    });
+}
+
+if (closeSidebar) {
+    closeSidebar.addEventListener('click', function() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    });
+}
+
+overlay.addEventListener('click', function() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+});
+
 

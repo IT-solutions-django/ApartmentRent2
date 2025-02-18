@@ -16,13 +16,14 @@
 <body>
 
     <!-- Шапка -->
-    <header class="bg-white shadow-sm py-3 px-5 d-flex justify-content-between align-items-center">
+    <header class="bg-white py-2 px-5 d-flex justify-content-between align-items-center">
+        <div class="container d-flex justify-content-between align-items-center">
         <div class="text-center" style="font-size: 36px !important; font-family: 'Aboreto', cursive;"><a href="/">GOSTI<p style="font-size: 12px; vertical-align: bottom;">VLADIVOSTOK</p></a></div>
         <nav>
             <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
             <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="#reviews" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#questions" class="text-dark text-decoration-none mx-3">Вопросы</a>
             <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
         </nav>
         <div class="text-end">
@@ -35,12 +36,77 @@
         </a>
         <p class="mb-0 text-dark ms-2">+7 (900) 123-45-67</p>
     </div>
+            {% if user.is_authenticated %}
     <div class="text-end d-flex align-items-center justify-content-end mt-3">
-        <a href="#" class="text-dark text-decoration-none me-2">Личный кабинет</a>
+        <a href="#" class="text-dark text-decoration-none me-2" id="profileLink">Личный кабинет</a>
         <i class="bi bi-person fs-5 text-dark"></i>
     </div>
-</div>
+            {% else %}
+    <div class="text-end d-flex align-items-center justify-content-end mt-3">
+        <a href="{% url 'login' %}" class="text-dark text-decoration-none me-2">Личный кабинет</a>
+        <i class="bi bi-person fs-5 text-dark"></i>
+    </div>
+            {% endif %}
 
+    <!-- Шторка -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-content mt-5 text-center">
+            <span class=" fs-5 text-center">Рады видеть вас вновь</span>
+            {% if user.is_authenticated %}
+            <p>{{ user.username }}</p>
+            {% endif %}
+        </div>
+        <div class="sidebar-content mt-5" style="text-align: left;">
+            <span class=" fs-6">Бронирования</span>
+            <hr>
+            {% if active_bookings %}
+            {% for booking in active_bookings %}
+            <div class="active-booking">
+                <div class="row mb-3">
+                <div class="col-12">
+                    <a href="{% url 'card' booking.apartment.id %}">
+                        <img src="{% static 'img/Frame 610.png' %}" alt="Фото квартиры" class="img-fluid">
+                    </a>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'card' booking.apartment.id %}" class="fs-6">{{ booking.apartment.name }}</a>
+                            <span class="text-muted"><i class="bi bi-people fs-6"></i> до {{ booking.apartment.quantity_people }} мест</span>
+                            <span class="text-muted"><i class="bi bi-arrows-angle-contract"></i> {{ booking.apartment.square }} м²</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <span><strong>Заезд:</strong> {{ booking.start_date|date:"d-m-Y" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-2">
+                            <span><strong>Выезд:</strong> {{ booking.end_date|date:"d-m-Y" }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mt-5">
+                            <span>Стоимость</span>
+                            <span>{{ booking.total_price|round_price }} ₽ <span class="card-text text-muted fs-6">/ {{ booking.get_total_days }} суток</span></span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Нет активных бронирований</p>
+        {% endif %}
+        </div>
+        <div class="sidebar-content text-center">
+            <a href="{% url 'logout' %}" id="logoutLink" class="text-dark">
+                <i class="bi bi-box-arrow-right fs-4 me-1"></i> Выйти
+            </a>
+        </div>
+        <button id="closeSidebar" class="btn-close"></button>
+    </div>
+
+    <div id="overlay" class="overlay"></div>
+
+</div>
+        </div>
     </header>
 
     <!-- Основной блок -->
@@ -50,31 +116,32 @@
     </div>
 
     <div class="position-absolute start-1 top-50 translate-middle-y text-start ms-5 banner-text" style="color: white;">
-        <h2>Владивосток ждёт вас — <br>откройте его с нами!</h2>
-        <p class="mt-3">Арендуй с кофортом, живи с удовольствием!<br>Квартиры на любой вкус — твой идеальный выбор!</p>
+        <h2 style="font-size: 45px;">Владивосток ждёт вас — <br>откройте его с нами!</h2>
+        <p class="mt-3" style="font-size: 20px;">Арендуй с кофортом, живи с удовольствием!<br>Квартиры на любой вкус — твой идеальный выбор!</p>
         <div class="mt-5">
-            <a href="{% url 'catalog' %}" class="btn btn-primary w-50 watch-button-banner">Смотреть квартиры</a>
+            <a href="{% url 'catalog' %}" class="btn btn-primary w-auto watch-button-banner">Смотреть квартиры</a>
         </div>
     </div>
 
     <!-- Форма для бронирования -->
-    <div class="position-absolute start-50 translate-middle-x bg-white shadow p-4 rounded-3 w-75" style="bottom: -40px;">
-        <form class="row g-3">
+    <div class="position-absolute start-50 translate-middle-x bg-white shadow p-4 rounded-3 w-75" style="bottom: -40px; background-color: #F7F7F7 !important;">
+        <form class="row g-3" method="post">
+            {% csrf_token %}
             <div class="col-md-3">
                 <div class="form-floating">
-                    <input type="date" id="dateInput" class="form-control" placeholder=" ">
-                    <label for="dateInput">Заезд</label>
+                    <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " min="{{ date_now }}" onchange="updateMinCheckoutDate()">
+                    <label for="check-in-date">Заезд</label>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-floating">
-                    <input type="date" id="dateOutput" class="form-control" placeholder=" ">
-                    <label for="dateInput">Выезд</label>
+                    <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " min="{{ date_tomorrow }}">
+                    <label for="check-out-date">Выезд</label>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-floating">
-                    <input type="number" id="guest-form" class="form-control" placeholder="Гости">
+                    <input type="number" id="guest-form" name="count-people" class="form-control" placeholder=" " required>
                     <label for="guest-form">Количество гостей</label>
                 </div>
             </div>
@@ -92,28 +159,28 @@
             <div class="col-md-3">
                 <div class="card p-4 shadow card-advantages">
                     <img src="{% static 'img/Icon_Ear.png' %}" alt="Эмблема" class="badge-image">
-                    <h6 class="card-title">Всегда на связи</h6>
+                    <h6 class="card-title" style="font-weight: 500;">Всегда на связи</h6>
                     <p class="card-text">Мы поможем вам в любое время суток, если возникнут вопросы, обеспечивая комфортное проживание.</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-4 shadow card-advantages">
                     <img src="{% static 'img/Icon_Location.png' %}" alt="Эмблема" class="badge-image">
-                    <h6 class="card-title">Удобное расположение</h6>
+                    <h6 class="card-title" style="font-weight: 500;">Удобное расположение</h6>
                     <p class="card-text">Наши квартиры расположены в разных районах Владивостока, чтобы вы подобрали удобное для себя расположение.</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-4 shadow card-advantages">
                     <img src="{% static 'img/Icon_Fire.png' %}" alt="Эмблема" class="badge-image">
-                    <h6 class="card-title">Разнообразие вариантов</h6>
+                    <h6 class="card-title" style="font-weight: 500;">Разнообразие вариантов</h6>
                     <p class="card-text">Мы предлагаем широкий выбор квартир, чтобы удовлетворить любые ваши потребности.</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card p-4 shadow card-advantages">
                     <img src="{% static 'img/Icon_Star.png' %}" alt="Эмблема" class="badge-image">
-                    <h6 class="card-title">Гарантия качества и безопасности</h6>
+                    <h6 class="card-title" style="font-weight: 500;">Гарантия качества и безопасности</h6>
                     <p class="card-text">Каждая квартира проходит строгую проверку, чтобы гарантировать высокие стандарты качества.</p>
                 </div>
             </div>
@@ -123,24 +190,26 @@
     <!-- Рекомендованные предложения -->
 <section class="container mt-5 recommendations">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <span class="fs-2">Рекомендованные предложения</span>
+        <span class="fs-2" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Рекомендованные предложения</span>
         <a href="{% url 'catalog' %}" class="btn btn-primary watch-apart">Смотреть квартиры</a>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 mt-4">
         {% for apart in aparts_popular %}
         <div class="col-md-4">
-            <div class="card shadow-sm">
+            <a href="{% url 'card' apart.id %}">
+            <div class="card shadow-sm card-apart-main">
                 <img src="{% static 'img/Photo_1.png' %}" class="card-img-top" alt="Квартира">
                 <div class="card-body">
                     <h5 class="card-title">{{ apart.name }}</h5>
-                    <p class="card-text text-muted"><i class="bi bi-people fs-6"></i> до {{ apart.quantity_people }} мест • {{ apart.square }} м²</p>
-                    <div class="d-flex justify-content-between align-items-center">
+                    <p class="card-text text-muted card-desc-apart"><i class="bi bi-people fs-6"></i> до {{ apart.quantity_people }} мест • {{ apart.square }} м²</p>
+                    <div class="d-flex justify-content-between align-items-center card-apart-block-price">
                         <span class="fs-5">от {{ apart.price|round_price }} ₽ <span class="card-text text-muted fs-6">/ сутки</span></span>
-                        <a href="{% url 'card' apart.id %}" class="btn btn-outline-primary">Выбрать</a>
+                        <a href="{% url 'card' apart.id %}" class="btn btn-outline-primary" style="padding: 10px 20px;">Выбрать</a>
                     </div>
                 </div>
             </div>
+            </a>
 
         </div>
         {% endfor %}
@@ -154,49 +223,50 @@
 
     <section class="container mt-5 services-container">
     <!-- Заголовок -->
-    <span class="fs-2 text-left mb-4">Услуги</span>
+    <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Услуги</span>
 
     <!-- Блок с эмблемами -->
-    <div class="row justify-content-between text-center mb-4 mt-4">
+    <div class="row justify-content-between text-center mb-5 mt-5">
         <div class="col">
             <img src="{% static 'img/car.png' %}" alt="Сервис 1" class="img-fluid w-42">
-            <p class="mt-2">Трансфер, Парковка</p>
+            <p class="mt-2" style="font-size: 20px; font-weight: 500;">Трансфер, Парковка</p>
         </div>
         <div class="col">
             <img src="{% static 'img/wifi.png' %}" alt="Сервис 2" class="img-fluid w-42">
-            <p class="mt-2">Wi-Fi, TV</p>
+            <p class="mt-2" style="font-size: 20px; font-weight: 500;">Wi-Fi, TV</p>
         </div>
         <div class="col">
             <img src="{% static 'img/pets.jpg' %}" alt="Сервис 3" class="img-fluid w-42">
-            <p class="mt-2">Можно с животными</p>
+            <p class="mt-2" style="font-size: 20px; font-weight: 500;">Можно с животными</p>
         </div>
         <div class="col">
             <img src="{% static 'img/Frame 669.png' %}" alt="Сервис 4" class="img-fluid w-42">
-            <p class="mt-2">Услуги уборки <br>ежедневно</p>
+            <p class="mt-2" style="font-size: 20px; font-weight: 500;">Услуги уборки <br>ежедневно</p>
         </div>
         <div class="col">
             <img src="{% static 'img/calendar-tick.png' %}" alt="Сервис 5" class="img-fluid w-42">
-            <p class="mt-2">Гибкие условия <br>аренды</p>
+            <p class="mt-2" style="font-size: 20px; font-weight: 500;">Гибкие условия <br>аренды</p>
         </div>
     </div>
 
     <!-- Форма бронирования -->
-    <form class="row g-3">
+    <form class="row g-3" method="post">
+        {% csrf_token %}
         <div class="col-md-3">
                     <div class="form-floating">
-                        <input type="date" id="dateInput" class="form-control" placeholder=" ">
-                        <label for="dateInput">Заезд</label>
+                        <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " min="{{ date_now }}" onchange="updateMinCheckoutDate()">
+                        <label for="check-in-date">Заезд</label>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-floating">
-                        <input type="date" id="dateOutput" class="form-control" placeholder=" ">
-                        <label for="dateInput">Выезд</label>
+                        <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " min="{{ date_tomorrow }}">
+                        <label for="check-out-date">Выезд</label>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-floating">
-                        <input type="number" id="guest-form" class="form-control" placeholder="Гости">
+                        <input type="number" id="guest-form" name="count-people" class="form-control" placeholder=" " required>
                         <label for="guest-form">Количество гостей</label>
                     </div>
                 </div>
@@ -206,10 +276,10 @@
     </form>
 </section>
 
-    <section class="container my-5 position-relative mt-5 reviews-container">
-    <span class="fs-2 text-left mb-4">Отзывы наших гостей</span>
+    <section class="container my-5 position-relative mt-5 reviews-container" id="reviews">
+    <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Отзывы наших гостей</span>
 
-    <div class="text-left mb-4">
+    <div class="text-left mb-4" style="margin-top: 20px;">
         <span class="fw-bold" style="font-size: 24px; color: #273B7D;">Booking</span>
         <span class="fw-bold" style="color: #499FDD; font-size: 24px;">.com</span>
     </div>
@@ -225,11 +295,11 @@
         </div>
     </div>
 
-    <div class="overflow-hidden w-100 mt-5 position-relative">
+    <div class="overflow-hidden w-100 mt-5 position-relative" style="margin-top: 60px !important;">
         <div class="d-flex gap-3 flex-nowrap w-100" id="reviewsContainer">
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -238,8 +308,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -250,7 +320,7 @@
 
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -259,8 +329,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -271,7 +341,7 @@
 
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -280,8 +350,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -292,7 +362,7 @@
 
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -301,8 +371,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -313,7 +383,7 @@
 
             <div class="card p-3 shadow-sm flex-grow-1 review-card">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-1">Отличное место!</h5>
+                    <h5 class="mb-1" style="font-weight: 600;">Отличное место!</h5>
                     <div class="d-flex">
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                         <i class="bi bi-star-fill text-warning fs-5"></i>
@@ -322,8 +392,8 @@
                         <i class="bi bi-star-fill text-warning fs-5"></i>
                     </div>
                 </div>
-                <p class="text-muted small">Очень уютная квартира, прекрасный вид и удобное расположение!</p>
-                <div class="d-flex align-items-center mt-3">
+                <p class="small" style="font-weight: 500;">Квартира просто замечательная! Чистая, светлая и очень уютная. В ней есть все необходимое для комфортного проживания. Особенно понравилась кухня — мы готовили ужины и наслаждались семейными вечерами. Рекомендуем всем!</p>
+                <div class="d-flex align-items-center mt-auto">
                     <img src="{% static 'img/Yana_Photo.png' %}" class="rounded-circle me-2" alt="User">
                     <div>
                         <strong>Анна.С</strong>
@@ -338,17 +408,17 @@
 </section>
 
     <section class="container my-5 attraction-container">
-        <span class="fs-2 text-left mb-4">Не знаете куда сходить?</span>
+        <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Не знаете куда сходить?</span>
 
     <div class="d-flex align-items-center justify-content-between mb-5">
         <div class="d-flex align-items-center">
 
             <img src="{% static 'img/image 330.png' %}" alt="Logo" class="me-3">
         </div>
-        <p class="small text-muted">Мы подготовили для вас список замечательных <br>достопримечательностей Владивостока, <br>которые стоит посетить.</p>
+        <p class="small" style="font-size: 20px; font-weight: 500;">Мы подготовили для вас список замечательных <br>достопримечательностей Владивостока, <br>которые стоит посетить.</p>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 mt-3">
         <div class="col-md-8">
             <div class="position-relative">
                 <a href="https://example.com" target="_blank">
@@ -393,16 +463,16 @@
     </div>
 </section>
 
-    <section class="container my-5 questions-container">
-        <span class="fs-2 text-left mb-4">Часто задаваемые вопросы</span>
+    <section class="container my-5 questions-container" id="questions">
+        <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Часто задаваемые вопросы</span>
 
 
     <div class="d-flex">
-        <div class="w-50 pe-3 questions">
+        <div class="w-50 pe-3 questions me-5">
             <div class="accordion" id="faqAccordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="font-size: 20px; font-weight: 500;">
                             Как я могу заказать продукт?
                         </button>
                     </h2>
@@ -415,7 +485,7 @@
 
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="font-size: 20px; font-weight: 500;">
                             Как мне оплатить заказ?
                         </button>
                     </h2>
@@ -428,7 +498,7 @@
 
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="font-size: 20px; font-weight: 500;">
                             Как долго будет доставляться мой заказ?
                         </button>
                     </h2>
@@ -441,7 +511,7 @@
 
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingFour">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour" style="font-size: 20px; font-weight: 500;">
                             Как долго будет доставляться мой заказ?
                         </button>
                     </h2>
@@ -454,7 +524,7 @@
 
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingFive">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive" style="font-size: 20px; font-weight: 500;">
                             Как долго будет доставляться мой заказ?
                         </button>
                     </h2>
@@ -467,16 +537,16 @@
             </div>
         </div>
 
-        <div class="w-50 ps-3 questions-img">
+        <div class="w-50 ps-5 questions-img">
             <img src="{% static 'img/Frame 678.png' %}" alt="FAQ Image" class="img-fluid rounded" style="height: 370px; width: 100%;">
         </div>
     </div>
 </section>
 
     <section class="container my-5 end-container">
-        <span class="fs-2 text-left mb-4">Остались вопросы?</span>
+        <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Остались вопросы?</span>
 
-    <p class="text-left mb-4 mt-3">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
+    <p class="text-left mb-5 mt-4" style="margin-bottom: 80px !important; font-weight: 500; font-size: 20px;">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
 
     <div class="d-flex justify-content-between align-items-center position-relative">
         <div>
@@ -487,16 +557,16 @@
         <div class="position-absolute end-0 translate-middle-y w-25 p-3 me-5 bg-white border rounded shadow-sm form-end">
             <form action="#" method="POST">
                 <div class="mb-3">
-                    <label for="name" class="form-label">Имя</label>
-                    <input type="text" class="form-control" id="name" required placeholder="Введите имя">
+                    <label for="name" class="form-label" style="font-size: 20px; font-weight: 500;">Имя</label>
+                    <input type="text" class="form-control" id="name" required placeholder="Введите имя" style="padding: 10px 20px;">
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label">Номер телефона</label>
-                    <input type="email" class="form-control" id="email" required placeholder="+7">
+                    <label for="email" class="form-label" style="font-size: 20px; font-weight: 500;">Номер телефона</label>
+                    <input type="email" class="form-control" id="email" required placeholder="+7" style="padding: 10px 20px;">
                 </div>
                 <div class="mb-3">
-                    <label for="question" class="form-label">Сообщение</label>
-                    <textarea class="form-control" id="question" rows="4" required placeholder="Введите текст сообщения"></textarea>
+                    <label for="question" class="form-label" style="font-size: 20px; font-weight: 500;">Сообщение</label>
+                    <textarea class="form-control" id="question" rows="4" required placeholder="Введите текст сообщения" style="padding: 10px 20px;"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary w-100 form-end-button">Оставить заявку</button>
             </form>
@@ -509,8 +579,8 @@
         <nav>
             <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
             <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Отзывы</a>
-            <a href="#" class="text-dark text-decoration-none mx-3">Вопросы</a>
+            <a href="#reviews" class="text-dark text-decoration-none mx-3">Отзывы</a>
+            <a href="#questions" class="text-dark text-decoration-none mx-3">Вопросы</a>
             <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
         </nav>
     </div>
@@ -540,5 +610,22 @@
 
     <!-- Подключение Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('check-in-date').setAttribute('min', today);
+
+    function updateMinCheckoutDate() {
+        const checkInDate = document.getElementById('check-in-date').value;
+        if (checkInDate) {
+            const checkIn = new Date(checkInDate);
+            checkIn.setDate(checkIn.getDate() + 1);
+
+            const checkOutMinDate = checkIn.toISOString().split('T')[0];
+            document.getElementById('check-out-date').setAttribute('min', checkOutMinDate);
+        }
+    }
+
+    window.onload = updateMinCheckoutDate;
+</script>
 </body>
 </html>
