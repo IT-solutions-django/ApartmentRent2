@@ -129,4 +129,4 @@ CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 CELERY_TIMEZONE = "Europe/Moscow"
 
-CELERY_IMPORTS = ("your_project_name.tasks",)
+CELERY_IMPORTS = ("rent.tasks",)
