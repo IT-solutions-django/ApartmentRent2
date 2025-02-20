@@ -868,7 +868,7 @@ textarea {
         font-size: 20px!important;
     }
     .info-bron {
-        height: 516px!important;
+        height: auto!important;
     }
     .reservation-bron-button {
         font-size: 14px!important;
