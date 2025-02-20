@@ -938,5 +938,14 @@ textarea {
     .info-register {
         margin-top: 25px;
     }
+    .footer-mobile {
+        display:flex!important;
+    }
+    .footer-desktop {
+        display: none!important;
+    }
+    .footer-mobile .text-end {
+        margin-left: auto!important;
+    }
 }
 
