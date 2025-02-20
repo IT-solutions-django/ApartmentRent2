@@ -940,6 +940,9 @@ textarea {
     }
     .footer-mobile {
         display:flex!important;
+        padding-right: 1rem !important;
+        padding-left: 1rem !important;
+        justify-content: right!important;
     }
     .footer-desktop {
         display: none!important;
