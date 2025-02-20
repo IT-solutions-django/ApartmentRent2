@@ -4,6 +4,7 @@ header {
     left: 0;
     width: 100%;
     z-index: 1000;
+    padding: 0 !important;
 }
 
 body {
@@ -60,7 +61,7 @@ body {
     margin-top: 120px !important;
 }
 
-.watch-apart {
+.watch-apart, .watch-apart-2 {
     background-color: #284356 !important;
     border-color: #284356 !important;
     border-radius: 10px !important;
@@ -68,17 +69,17 @@ body {
     padding: 10px 20px !important;
 }
 
-.watch-apart:active {
+.watch-apart:active, .watch-apart-2:active {
     background-color: #284356 !important;
     border-color: #284356 !important;
 }
 
-.watch-apart:hover {
+.watch-apart:hover, .watch-apart-2:hover {
     background-color: #5f6a73 !important;
     border-color: #5f6a73 !important;
 }
 
-.watch-apart:focus {
+.watch-apart:focus, .watch-apart-2:focus {
     background-color: #284356 !important;
     border-color: #284356 !important;
 }
@@ -453,7 +454,7 @@ textarea {
     height: 156px !important;
 }
 
-#loginErrorModal .modal-header {
+#loginErrorModal .modal-header, #FeedbackModal .modal-header {
     background-color: #284356 !important;
     color: white !important;
     justify-content: center !important;
@@ -467,17 +468,21 @@ textarea {
     text-align: center;
 }
 
-#loginErrorModal .modal-footer {
+#FeedbackModal #modalMessageFeedback {
+    text-align: center;
+}
+
+#loginErrorModal .modal-footer, #FeedbackModal .modal-footer {
     justify-content: center;
 }
 
-#loginErrorModal button {
+#loginErrorModal button, #FeedbackModal button {
     background-color: white;
     color: #284356 !important;
     border: 1px solid #284356 !important;
 }
 
-#loginErrorModal button:hover {
+#loginErrorModal button:hover, #FeedbackModal button:hover {
     background-color: #284356 !important;
     color: white !important;
 }
@@ -509,7 +514,7 @@ textarea {
 }
 
 .card-desc-apart {
-    margin-top: 13px !important;
+    margin-top: 10px !important;
 }
 
 .card-apart-block-price {
@@ -531,3 +536,407 @@ textarea {
 .reservation-form-contact input, .reservation-form-contact textarea {
     border-color: #284356 !important;
 }
+
+.mobile-nav {
+    display: none;
+    position: fixed;
+    top: 70px!important;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+}
+
+.mobile-nav a {
+    font-size: 18px;
+}
+
+.title-recommendations {
+    font-size: 48px !important;
+}
+
+.services-title {
+    font-size: 48px !important;
+}
+
+.title-reviews {
+    font-size: 48px !important;
+}
+
+.attraction-title {
+    font-size: 48px !important;
+}
+
+.questions-title {
+    font-size: 48px !important;
+}
+
+.end-container-title {
+    font-size: 48px !important;
+}
+
+.reservation-title {
+    font-size: 32px !important;
+}
+
+.reservation-main-title {
+    font-size: 32px !important;
+}
+
+.apartment-details-name {
+    font-size: 48px !important;
+}
+
+.payment-title {
+    font-size: 32px !important;
+}
+
+.logo-title {
+    font-size: 36px !important;
+}
+
+@media (max-width: 768px) {
+    .banner {
+        height: 259px !important;
+    }
+    .start-form-bron {
+        bottom: -297px !important;
+    }
+    .banner-text h2 {
+        font-size: 18px !important;
+    }
+    .banner-text {
+        transform: translateY(-50%) !important;
+        margin-left: 1rem !important;
+    }
+    .banner-text p {
+        font-size: 14px !important;
+    }
+    .watch-button-banner {
+        margin-top: -55px !important;
+        font-size: 14px !important;
+        padding: 8px 10px !important;
+        border-radius: 5px !important;
+    }
+    .cards-advantages {
+        margin-top: 360px !important;
+    }
+    .card-advantages {
+        margin-bottom: 45px !important;
+        height: 185px !important;
+    }
+    .card-advantages h6 {
+        font-size: 18px !important;
+    }
+    .card-advantages p {
+        font-size: 14px !important;
+        margin-top: 5px !important;
+    }
+    .title-recommendations {
+        font-size: 18px !important;
+        line-height: 18px !important;
+    }
+    .title-recommendations-block {
+        justify-content: center !important;
+    }
+    .recommendations {
+        margin-top: 50px !important;
+    }
+    .watch-apart {
+        display: none !important;
+    }
+    .watch-apart-2 {
+        margin-top: 15px !important;
+        padding: 8px 10px !important;
+        font-size: 14px !important;
+        font-weight: 300;
+        border-radius: 5px !important;
+    }
+    .mobile-watch-apart {
+        display: flex !important;
+    }
+    .card-img-top {
+        height: 170px !important;
+    }
+    .reserve {
+        font-size: 16px !important;
+        font-weight: 300;
+    }
+    .services-title {
+        display: flex;
+        justify-content: center !important;
+        font-size: 25px !important;
+    }
+    .services-container {
+        margin-top: 70px !important;
+    }
+    .services-block-img img {
+        width: 32px !important;
+    }
+    .services-block-img p {
+        font-size: 18px !important;
+    }
+    .card {
+        flex: 0 0 100% !important;
+    }
+    .title-reviews {
+        display: flex;
+        justify-content: center !important;
+        font-size: 25px !important;
+    }
+    .booking-com span {
+        font-size: 16px !important;
+    }
+    .attraction-block-desc {
+        display: block !important;
+        margin-top: 25px !important;
+        justify-content: center !important;
+    }
+    .attraction-block-desc p {
+        margin-top: 15px !important;
+        text-align: center;
+        font-size: 16px !important;
+    }
+    .attraction-title {
+        display: flex;
+        justify-content: center !important;
+        font-size: 25px !important;
+    }
+    .attraction-block-img {
+        justify-content: center !important;
+    }
+    .attraction-images {
+        margin-top: -17px !important;
+    }
+    .attraction-container {
+        margin-top: 70px !important;
+    }
+    .questions-block-img {
+        display: block !important;
+    }
+    .questions {
+        width: 100% !important;
+    }
+    .questions-img {
+        width: 100% !important;
+        margin-top: 20px!important;
+        padding-left: 0!important;
+    }
+    .questions-img img {
+        height: 150px !important;
+    }
+    .questions-title {
+        display: flex;
+        justify-content: center !important;
+        font-size: 25px !important;
+        margin-bottom: -35px !important;
+    }
+    .questions-container {
+        margin-top: 70px !important;
+    }
+    .accordion-button {
+        font-size: 13px !important;
+    }
+    .end-container-block-img {
+        position: static !important;
+        display: block !important;
+    }
+    .form-end {
+        margin-top: -250px !important;
+        width: 90% !important;
+        transform: translateY(50%)!important;
+        position: static !important;
+        margin-left: 20px !important;
+    }
+    .form-end form {
+        width: 100% !important;
+    }
+    .form-end textarea {
+        height: 100px !important;
+    }
+    .form-end label {
+        font-size: 14px !important;
+    }
+    .form-end input {
+        height: 35px;
+    }
+    .end-container-desc {
+        text-align: center;
+        font-size: 14px !important;
+    }
+    .end-container-desc br {
+        display: none;
+    }
+    .end-container-title {
+        display: flex;
+        justify-content: center !important;
+        font-size: 25px !important;
+    }
+    .end-container {
+        margin-top: 70px !important;
+    }
+    .end-img img {
+        height: 300px !important;
+    }
+    .catalog-search {
+        width: auto !important;
+    }
+    .reviews-container {
+        margin-top: 70px !important;
+    }
+    .arrow img {
+        width: 30px !important;
+    }
+    .apartment-details-name {
+        font-size: 25px !important;
+    }
+    .apartment-details-block-price {
+        display: block !important;
+    }
+    .bron-card {
+        display: block !important;
+        margin-left: 0 !important;
+        width: 40% !important;
+        padding: 8px 6px !important;
+        border-radius: 5px !important;
+        margin-top: 7px !important;
+        font-size: 14px !important;
+    }
+    .img-apart {
+        height: 130px !important;
+    }
+    .apartment-details-price {
+        font-size: 16px !important;
+    }
+    .apartment-details-block-info a, .apartment-details-block-info p {
+        font-size: 16px !important;
+    }
+    .apartment-details-block-cards span {
+        font-size: 14px !important;
+    }
+    .apartment-details-block-cards img {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    .mobile-Wi-Fi {
+        margin-left: 25px !important;
+    }
+    .apartment-details-block-facilities div:not(.mobile-Wi-Fi) {
+        margin-left: 0 !important;
+    }
+    .mobile-TV {
+        margin-top: 25px !important;
+    }
+    .apartment-details-block-facilities h5 {
+        font-size: 18px !important;
+    }
+    .apartment-details-block-facilities p {
+        font-size: 14px !important;
+    }
+    .reviews-container-mobile {
+        margin-top: 50px !important;
+    }
+    .reservation-form-surname {
+        margin-bottom: 12px!important;
+    }
+    .reservation-form-patronymic {
+        margin-top: 12px!important;
+    }
+    .reservation-form-phone {
+        margin-top: -12px!important;
+    }
+    .reservation-form-email {
+        margin-top: 12px!important;
+    }
+    .reservation-form-comment {
+        margin-top: 12px!important;
+    }
+    .reservation-block-bron {
+        margin-top: 130px!important;
+    }
+    .reservation-title {
+         font-size: 25px !important;
+    }
+    .reservation-main-title {
+        font-size: 25px !important;
+    }
+    .reservation-apart-info-name {
+        font-size: 20px !important;
+    }
+    .reservation-block-price span {
+        font-size: 20px!important;
+    }
+    .info-bron {
+        height: 516px!important;
+    }
+    .reservation-bron-button {
+        font-size: 14px!important;
+        border-radius: 5px!important;
+        padding: 8px 6px !important;
+    }
+    .payment-title {
+        display: flex;
+        justify-content: center !important;
+        font-size: 25px !important;
+    }
+    .rus-card {
+        font-size: 18px!important;
+    }
+    .payment-card-dop {
+        font-size: 14px!important;
+    }
+    .card-company-img img {
+        height: 25px!important;
+        width: 50px!important;
+    }
+    .payment-container {
+        margin-top: 70px!important;
+    }
+    .header-phone-block {
+        display: none!important;
+    }
+    .header-phone-block-mobile {
+        display:flex!important;
+    }
+    .notMobile {
+        display: none!important;
+    }
+    .logo-title {
+        font-size: 20px!important;
+        margin-left: -30px!important;
+    }
+    .mobile-header-end {
+        display: flex!important;
+        margin-top: -20px!important;
+        margin-right: -30px!important;
+    }
+    .card-apart-main h5 {
+        font-size: 16px !important;
+    }
+    .card-apart-catalog h5 {
+        font-size: 16px !important;
+    }
+    .catalog {
+        margin-top: 70px!important;
+    }
+    .apartment-details {
+        margin-top: 70px!important;
+    }
+    .reservation {
+        margin-top: 70px!important;
+    }
+    nav a:hover::after {
+        width: 0!important;
+    }
+    .main-login-container {
+        margin-top: 70px!important;
+    }
+    .login-container {
+        margin-top: 10px!important;
+    }
+    .info-register {
+        margin-top: 25px;
+    }
+}
+

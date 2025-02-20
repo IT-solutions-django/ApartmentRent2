@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from datetime import datetime, timedelta
 from django.db.models import Q
-from apartment.forms import BookingForm
+from apartment.forms import BookingForm, FeedbackForm
 from apartment.models import Apartment, Booking
 from django.http import JsonResponse
 from .utils.send_tg import send_telegram_message
@@ -12,11 +12,23 @@ from rent.tasks import send_telegram_message
 
 def main(request):
     if request.POST:
-        start_date = datetime.strptime(request.POST['check-in-date'], '%Y-%m-%d').date()
-        end_date = datetime.strptime(request.POST['check-out-date'], '%Y-%m-%d').date()
-        count_people = request.POST['count-people']
+        if request.POST.get('check-in-date'):
+            start_date = datetime.strptime(request.POST['check-in-date'], '%Y-%m-%d').date()
+            end_date = datetime.strptime(request.POST['check-out-date'], '%Y-%m-%d').date()
+            count_people = request.POST['count-people']
 
-        return redirect(f"/catalog/?check-in-date={start_date}&check-out-date={end_date}&people-count={count_people}")
+            return redirect(
+                f"/catalog/?check-in-date={start_date}&check-out-date={end_date}&people-count={count_people}")
+        else:
+            form = FeedbackForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return JsonResponse({'success': 'Ваша заявка отправлена, менеджер свяжется с вами в ближайшее время',
+                                     'redirect_url': f'{request.path}'})
+            else:
+                errors = [error for field in form for error in field.errors]
+                return JsonResponse({'errors': errors}, status=400)
+
     if request.user.is_authenticated:
         active_bookings = Booking.objects.filter(user=request.user, status='C')
     else:
@@ -27,9 +39,11 @@ def main(request):
     date_now = datetime.now().date()
     date_tomorrow = date_now + timedelta(days=1)
 
+    form = FeedbackForm()
+
     return render(request, 'main.html', {'aparts_popular': aparts_popular, 'active_bookings': active_bookings,
                                          'date_now': date_now.isoformat(),
-                                         'date_tomorrow': date_tomorrow.isoformat()})
+                                         'date_tomorrow': date_tomorrow.isoformat(), 'form': form})
 
 
 def catalog(request):
@@ -68,15 +82,17 @@ def catalog(request):
     else:
         active_bookings = []
 
+    form = FeedbackForm()
+
     if date_in and date_out and people_count:
         return render(request, 'catalog.html',
                       {'aparts': aparts, 'date_start': date_in.isoformat(), 'date_end': date_out.isoformat(),
                        'people_count': people_count, 'people_options': people_options,
-                       'active_bookings': active_bookings})
+                       'active_bookings': active_bookings, 'form': form})
 
     return render(request, 'catalog.html',
                   {'aparts': aparts, 'people_options': people_options, 'date_now': date_now.isoformat(),
-                   'date_tomorrow': date_tomorrow.isoformat(), 'active_bookings': active_bookings})
+                   'date_tomorrow': date_tomorrow.isoformat(), 'active_bookings': active_bookings, 'form': form})
 
 
 def card(request, card_id):
@@ -85,8 +101,10 @@ def card(request, card_id):
     else:
         active_bookings = []
 
+    form = FeedbackForm()
+
     card_info = Apartment.objects.get(id=card_id)
-    return render(request, 'card.html', {'card_info': card_info, 'active_bookings': active_bookings})
+    return render(request, 'card.html', {'card_info': card_info, 'active_bookings': active_bookings, 'form': form})
 
 
 @login_required
@@ -160,15 +178,17 @@ def reservation(request, card_id):
             booked_dates.append(current_date.strftime("%Y-%m-%d"))
             current_date += timedelta(days=1)
 
+    form_2 = FeedbackForm()
+
     if date_in and date_out:
         return render(request, 'reservation.html',
                       {'date_now': date_now.isoformat(),
                        'date_tomorrow': (date_start + timedelta(days=1)).isoformat(),
                        'form': form_data_booking, 'card_info': card_info, 'active_bookings': active_bookings,
                        "booked_dates": json.dumps(booked_dates), 'date_in': date_start.isoformat(),
-                       'date_out': date_end.isoformat()})
+                       'date_out': date_end.isoformat(), 'form_2': form_2})
 
     return render(request, 'reservation.html',
                   {'date_now': date_now.isoformat(), 'date_tomorrow': date_tomorrow.isoformat(),
                    'form': form_data_booking, 'card_info': card_info, 'active_bookings': active_bookings,
-                   "booked_dates": json.dumps(booked_dates)})
+                   "booked_dates": json.dumps(booked_dates), 'form_2': form_2})

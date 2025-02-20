@@ -8,13 +8,14 @@ from django.contrib.auth.models import User
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
+        next_url = request.POST.get('next', '/')
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return JsonResponse({'success': True})
+                return JsonResponse({'success': True, 'next': next_url})
             else:
                 return JsonResponse({'errors': ['Неверный логин или пароль']}, status=400)
         else:
@@ -23,13 +24,15 @@ def login_view(request):
 
     else:
         form = LoginForm()
+        next_url = request.GET.get('next', '/')
 
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form, 'next': next_url})
 
 
 def register_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
+        next_url = request.POST.get('next', '/')
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
@@ -39,7 +42,7 @@ def register_view(request):
 
             user = User.objects.create_user(username=username, password=password)
             login(request, user)
-            return JsonResponse({'success': True})
+            return JsonResponse({'success': True, 'next': next_url})
 
         else:
             errors = [error for field in form for error in field.errors]
@@ -47,8 +50,9 @@ def register_view(request):
 
     else:
         form = LoginForm()
+        next_url = request.GET.get('next', '/')
 
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'register.html', {'form': form, 'next': next_url})
 
 
 def logout_view(request):

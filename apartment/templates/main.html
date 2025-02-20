@@ -12,39 +12,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Aboreto&display=swap" rel="stylesheet">
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
     <script src="{% static 'js/main.js' %}" defer></script>
+    <script src="{% static 'js/imask/Imask.min.js' %}"></script>
+
 </head>
 <body>
 
     <!-- Шапка -->
     <header class="bg-white py-2 px-5 d-flex justify-content-between align-items-center">
         <div class="container d-flex justify-content-between align-items-center">
-        <div class="text-center" style="font-size: 36px !important; font-family: 'Aboreto', cursive;"><a href="/">GOSTI<p style="font-size: 12px; vertical-align: bottom;">VLADIVOSTOK</p></a></div>
-        <nav>
+        <div class="text-center logo-title" style="font-size: 36px; font-family: 'Aboreto', cursive;"><a href="/">GOSTI<p style="font-size: 12px; vertical-align: bottom; margin-top: -10px;">VLADIVOSTOK</p></a></div>
+
+
+
+
+        <nav class="d-none d-md-flex">
             <a href="#" class="text-dark text-decoration-none mx-3">О нас</a>
             <a href="{% url 'catalog' %}" class="text-dark text-decoration-none mx-3">Квартиры</a>
             <a href="#reviews" class="text-dark text-decoration-none mx-3">Отзывы</a>
             <a href="#questions" class="text-dark text-decoration-none mx-3">Вопросы</a>
             <a href="#" class="text-dark text-decoration-none mx-3">Контакты</a>
         </nav>
-        <div class="text-end">
-    <div class="d-flex align-items-center justify-content-end">
-        <a href="#" class="me-2 text-primary fs-5">
-            <img src="{% static 'img/telegram.png' %}" alt="telegram" class="img-fluid">
-        </a>
-        <a href="#" class="me-2 text-success fs-5">
-            <img src="{% static 'img/whatsapp.png' %}" alt="whatsapp" class="img-fluid">
-        </a>
-        <p class="mb-0 text-dark ms-2">+7 (900) 123-45-67</p>
-    </div>
+        <div class="text-end mobile-header-end">
+
+    <div class="d-flex align-items-center justify-content-end header-phone-block">
+    <a href="https://t.me/your_username" class="me-2 text-primary fs-5" target="_blank">
+        <img src="{% static 'img/telegram.png' %}" alt="telegram" class="img-fluid">
+    </a>
+    <a href="https://wa.me/79001234567" class="me-2 text-success fs-5" target="_blank">
+        <img src="{% static 'img/whatsapp.png' %}" alt="whatsapp" class="img-fluid">
+    </a>
+    <a href="tel:+79001234567" class="mb-0 text-dark ms-2">+7 (900) 123-45-67</a>
+</div>
+
+
+
             {% if user.is_authenticated %}
-    <div class="text-end d-flex align-items-center justify-content-end mt-3">
-        <a href="#" class="text-dark text-decoration-none me-2" id="profileLink">Личный кабинет</a>
+    <div class="text-end d-flex align-items-center justify-content-end notMobile">
+        <a href="#" class="text-dark text-decoration-none me-2" id="profileLink">{{ user.username }}</a>
         <i class="bi bi-person fs-5 text-dark"></i>
     </div>
             {% else %}
-    <div class="text-end d-flex align-items-center justify-content-end mt-3">
+    <div class="text-end d-flex align-items-center justify-content-end notMobile">
         <a href="{% url 'login' %}" class="text-dark text-decoration-none me-2">Личный кабинет</a>
         <i class="bi bi-person fs-5 text-dark"></i>
+    </div>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+    <div class="text-end d-flex align-items-center justify-content-end d-md-none">
+        <a href="#" class="text-dark text-decoration-none me-2" id="profileLink2"><i class="bi bi-person fs-5 text-dark"></i></a>
+
+    </div>
+            {% else %}
+    <div class="text-end d-flex align-items-center justify-content-end d-md-none">
+        <a href="{% url 'login' %}" class="text-dark text-decoration-none me-2"><i class="bi bi-person fs-5 text-dark"></i></a>
     </div>
             {% endif %}
 
@@ -104,13 +125,30 @@
     </div>
 
     <div id="overlay" class="overlay"></div>
+            <button class="d-md-none border-0 bg-transparent fs-2" id="burgerMenu">
+            <i class="bi bi-list"></i>
+        </button>
 
 </div>
+
         </div>
     </header>
 
+    <!-- Шторка навигации -->
+<div id="mobileNav" class="mobile-nav d-md-none">
+    <nav class="d-flex flex-column text-center py-3">
+        <a href="#" class="text-dark text-decoration-none py-2">О нас</a>
+        <a href="{% url 'catalog' %}" class="text-dark text-decoration-none py-2">Квартиры</a>
+        <a href="#reviews" class="text-dark text-decoration-none py-2">Отзывы</a>
+        <a href="#questions" class="text-dark text-decoration-none py-2">Вопросы</a>
+        <a href="#" class="text-dark text-decoration-none py-2">Контакты</a>
+        <hr>
+        <a href="tel:+79001234567" class="text-dark text-decoration-none py-2">+7 (900) 123-45-67</a>
+    </nav>
+</div>
+
     <!-- Основной блок -->
-    <section class="container mt-5 position-relative">
+    <section class="container mt-5 position-relative promo">
     <div class="d-flex justify-content-center">
         <img src="{% static 'img/ced62674881c2322afda9690937d1110.jpeg' %}" alt="Фон" class="img-fluid banner">
     </div>
@@ -124,7 +162,7 @@
     </div>
 
     <!-- Форма для бронирования -->
-    <div class="position-absolute start-50 translate-middle-x bg-white shadow p-4 rounded-3 w-75" style="bottom: -40px; background-color: #F7F7F7 !important;">
+    <div class="position-absolute start-50 translate-middle-x bg-white shadow p-4 rounded-3 w-75 start-form-bron" style="bottom: -40px; background-color: #F7F7F7 !important;">
         <form class="row g-3" method="post">
             {% csrf_token %}
             <div class="col-md-3">
@@ -189,8 +227,8 @@
 
     <!-- Рекомендованные предложения -->
 <section class="container mt-5 recommendations">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <span class="fs-2" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Рекомендованные предложения</span>
+    <div class="d-flex justify-content-between align-items-center mb-4 title-recommendations-block">
+        <span class="fs-2 title-recommendations" style="font-size: 48px; font-weight: 500; line-height: 48px;">Рекомендованные предложения</span>
         <a href="{% url 'catalog' %}" class="btn btn-primary watch-apart">Смотреть квартиры</a>
     </div>
 
@@ -201,7 +239,10 @@
             <div class="card shadow-sm card-apart-main">
                 <img src="{% static 'img/Photo_1.png' %}" class="card-img-top" alt="Квартира">
                 <div class="card-body">
-                    <h5 class="card-title">{{ apart.name }}</h5>
+                    <div class="d-flex align-items-center justify-content-between mb-0">
+                    <h5 class="card-title mb-0">{{ apart.name }}</h5>
+                        <a href="https://2gis.ru/vladivostok/search/ул.%20Ленина%201" class="" target="_blank"><i class="bi bi-geo-alt"></i> ул. Ленина 1</a>
+                    </div>
                     <p class="card-text text-muted card-desc-apart"><i class="bi bi-people fs-6"></i> до {{ apart.quantity_people }} мест • {{ apart.square }} м²</p>
                     <div class="d-flex justify-content-between align-items-center card-apart-block-price">
                         <span class="fs-5">от {{ apart.price|round_price }} ₽ <span class="card-text text-muted fs-6">/ сутки</span></span>
@@ -217,16 +258,18 @@
 
 
 
-
     </div>
+    <div class="w-100 mobile-watch-apart" style="display: none; justify-content: right;">
+        <a href="{% url 'catalog' %}" class="btn btn-primary watch-apart-2">Смотреть квартиры</a>
+        </div>
 </section>
 
     <section class="container mt-5 services-container">
     <!-- Заголовок -->
-    <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Услуги</span>
+    <span class="fs-2 text-left mb-4 services-title" style="font-size: 48px; font-weight: 500; line-height: 48px;">Услуги</span>
 
     <!-- Блок с эмблемами -->
-    <div class="row justify-content-between text-center mb-5 mt-5">
+    <div class="row justify-content-between text-center mb-5 mt-5 services-block-img">
         <div class="col">
             <img src="{% static 'img/car.png' %}" alt="Сервис 1" class="img-fluid w-42">
             <p class="mt-2" style="font-size: 20px; font-weight: 500;">Трансфер, Парковка</p>
@@ -277,11 +320,13 @@
 </section>
 
     <section class="container my-5 position-relative mt-5 reviews-container" id="reviews">
-    <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Отзывы наших гостей</span>
+    <span class="fs-2 text-left mb-4 title-reviews" style="font-size: 48px; font-weight: 500; line-height: 48px;">Отзывы наших гостей</span>
 
-    <div class="text-left mb-4" style="margin-top: 20px;">
+    <div class="text-left mb-4 booking-com" style="margin-top: 20px;">
+        <a href="#" target="_blank">
         <span class="fw-bold" style="font-size: 24px; color: #273B7D;">Booking</span>
         <span class="fw-bold" style="color: #499FDD; font-size: 24px;">.com</span>
+        </a>
     </div>
 
     <div class="position-relative">
@@ -408,21 +453,22 @@
 </section>
 
     <section class="container my-5 attraction-container">
-        <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Не знаете куда сходить?</span>
+        <span class="fs-2 text-left mb-4 attraction-title" style="font-size: 48px; font-weight: 500; line-height: 48px;">Не знаете куда сходить?</span>
 
-    <div class="d-flex align-items-center justify-content-between mb-5">
-        <div class="d-flex align-items-center">
-
+    <div class="d-flex align-items-center justify-content-between mb-5 attraction-block-desc">
+        <div class="d-flex align-items-center attraction-block-img">
+            <a href="#" target="_blank">
             <img src="{% static 'img/image 330.png' %}" alt="Logo" class="me-3">
+            </a>
         </div>
         <p class="small" style="font-size: 20px; font-weight: 500;">Мы подготовили для вас список замечательных <br>достопримечательностей Владивостока, <br>которые стоит посетить.</p>
     </div>
 
-    <div class="row g-4 mt-3">
-        <div class="col-md-8">
+    <div class="row g-4 row-cols-2 mt-3 attraction-images">
+        <div class="col-md-8 col-12">
             <div class="position-relative">
                 <a href="https://example.com" target="_blank">
-                    <img src="{% static 'img/Video.png' %}" alt="Attraction 1" class="img-fluid rounded">
+                    <img src="{% static 'img/Video.png' %}" alt="Attraction 1" class="img-fluid rounded attraction-video">
                 </a>
 
             </div>
@@ -464,10 +510,10 @@
 </section>
 
     <section class="container my-5 questions-container" id="questions">
-        <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Часто задаваемые вопросы</span>
+        <span class="fs-2 text-left mb-4 questions-title" style="font-size: 48px; font-weight: 500; line-height: 48px;">Часто задаваемые вопросы</span>
 
 
-    <div class="d-flex">
+    <div class="d-flex questions-block-img">
         <div class="w-50 pe-3 questions me-5">
             <div class="accordion" id="faqAccordion">
                 <div class="accordion-item">
@@ -544,32 +590,34 @@
 </section>
 
     <section class="container my-5 end-container">
-        <span class="fs-2 text-left mb-4" style="font-size: 48px !important; font-weight: 500; line-height: 48px;">Остались вопросы?</span>
+        <span class="fs-2 text-left mb-4 end-container-title" style="font-size: 48px; font-weight: 500; line-height: 48px;">Остались вопросы?</span>
 
-    <p class="text-left mb-5 mt-4" style="margin-bottom: 80px !important; font-weight: 500; font-size: 20px;">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
+    <p class="text-left mb-5 mt-4 end-container-desc" style="margin-bottom: 80px !important; font-weight: 500; font-size: 20px;">Мы понимаем, что аренда квартиры — это важное решение, и у вас <br>могут возникнуть дополнительные вопросы. Наша команда всегда <br>готова помочь вам!</p>
 
-    <div class="d-flex justify-content-between align-items-center position-relative">
-        <div>
-            <img src="{% static 'img/image 332.png' %}" alt="Question Image" class="w-100">
-        </div>
+    <div class="d-flex justify-content-between align-items-center position-relative end-container-block-img">
+
 
         <!-- Форма -->
         <div class="position-absolute end-0 translate-middle-y w-25 p-3 me-5 bg-white border rounded shadow-sm form-end">
-            <form action="#" method="POST">
+            <form  method="POST" id="feedback-form">
+                {% csrf_token %}
                 <div class="mb-3">
-                    <label for="name" class="form-label" style="font-size: 20px; font-weight: 500;">Имя</label>
-                    <input type="text" class="form-control" id="name" required placeholder="Введите имя" style="padding: 10px 20px;">
+                    <label for="{{ form.name.id_for_label }}" class="form-label" style="font-size: 20px; font-weight: 500;">Имя</label>
+                    {{ form.name }}
                 </div>
                 <div class="mb-3">
-                    <label for="email" class="form-label" style="font-size: 20px; font-weight: 500;">Номер телефона</label>
-                    <input type="email" class="form-control" id="email" required placeholder="+7" style="padding: 10px 20px;">
+                    <label for="{{ form.phone.id_for_label }}" class="form-label" style="font-size: 20px; font-weight: 500;">Номер телефона</label>
+                    {{ form.phone }}
                 </div>
                 <div class="mb-3">
-                    <label for="question" class="form-label" style="font-size: 20px; font-weight: 500;">Сообщение</label>
-                    <textarea class="form-control" id="question" rows="4" required placeholder="Введите текст сообщения" style="padding: 10px 20px;"></textarea>
+                    <label for="{{ form.comment.id_for_label }}" class="form-label" style="font-size: 20px; font-weight: 500;">Сообщение</label>
+                    {{ form.comment }}
                 </div>
                 <button type="submit" class="btn btn-primary w-100 form-end-button">Оставить заявку</button>
             </form>
+        </div>
+        <div class="end-img">
+            <img src="{% static 'img/image 332.png' %}" alt="Question Image" class="w-100">
         </div>
     </div>
 </section>
@@ -586,19 +634,39 @@
     </div>
     <div class="text-end">
         <div class="d-flex align-items-center justify-content-end">
-            <a href="#" class="me-2 text-primary fs-5">
-                <img src="{% static 'img/telegram.png' %}" alt="telegram" class="img-fluid">
-            </a>
-            <a href="#" class="me-2 text-success fs-5">
-                <img src="{% static 'img/whatsapp.png' %}" alt="whatsapp" class="img-fluid">
-            </a>
-            <p class="mb-0 text-dark ms-2">+7 (900) 123-45-67</p>
-        </div>
-        <div class="text-end d-flex align-items-center justify-content-end mt-3">
+    <a href="https://t.me/your_username" class="me-2 text-primary fs-5" target="_blank">
+        <img src="{% static 'img/telegram.png' %}" alt="telegram" class="img-fluid">
+    </a>
+    <a href="https://wa.me/79001234567" class="me-2 text-success fs-5" target="_blank">
+        <img src="{% static 'img/whatsapp.png' %}" alt="whatsapp" class="img-fluid">
+    </a>
+    <a href="tel:+79001234567" class="mb-0 text-dark ms-2">+7 (900) 123-45-67</a>
+</div>
+
+        <div class="text-end d-flex align-items-center justify-content-end">
             <span>г. Владивосток</span>
         </div>
     </div>
 </footer>
+        <div class="modal fade" id="loginErrorModal" tabindex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title me-1" id="reservationModalLabel">Спасибо!</h5>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 41 41" fill="none">
+                <path d="M20.5003 38.8646C10.3699 38.8646 2.13574 30.6304 2.13574 20.5C2.13574 10.3696 10.3699 2.13541 20.5003 2.13541C30.6307 2.13541 38.8649 10.3696 38.8649 20.5C38.8649 30.6304 30.6307 38.8646 20.5003 38.8646ZM20.5003 4.69791C11.7878 4.69791 4.69824 11.7875 4.69824 20.5C4.69824 29.2125 11.7878 36.3021 20.5003 36.3021C29.2128 36.3021 36.3024 29.2125 36.3024 20.5C36.3024 11.7875 29.2128 4.69791 20.5003 4.69791Z" fill="#FCFCFF"/>
+                <path d="M18.0745 26.6158C17.7328 26.6158 17.4082 26.4792 17.169 26.24L12.3345 21.4054C11.839 20.91 11.839 20.09 12.3345 19.5946C12.8299 19.0992 13.6499 19.0992 14.1453 19.5946L18.0745 23.5238L26.8553 14.7429C27.3507 14.2475 28.1707 14.2475 28.6661 14.7429C29.1615 15.2383 29.1615 16.0583 28.6661 16.5538L18.9799 26.24C18.7407 26.4792 18.4161 26.6158 18.0745 26.6158Z" fill="#FCFCFF"/>
+                </svg>
+            </div>
+            <div class="modal-body" id="modalMessage">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="redirectButton" style="display:none;">Перейти к каталогу</button>
+            </div>
+        </div>
+    </div>
+</div>
     </section>
 
 
@@ -626,6 +694,21 @@
     }
 
     window.onload = updateMinCheckoutDate;
+</script>
+<script defer>
+document.addEventListener('DOMContentLoaded', () => {
+
+    document.querySelectorAll('input[type="tel"]').forEach(input => {
+        let phoneMask = IMask(input, { mask: "+{7} (000) 000-00-00" });
+
+        function validatePhoneNumber() {
+            let t = input.value.replace(/\D/g, "");
+            return t.length < 11 ? (input.setCustomValidity("Необходимо минимум 11 цифр"), !1) : (input.setCustomValidity(""), !0);
+        }
+
+        input.addEventListener("input", validatePhoneNumber);
+    });
+});
 </script>
 </body>
 </html>

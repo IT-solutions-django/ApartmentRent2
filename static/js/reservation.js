@@ -72,6 +72,42 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('feedback-form');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const cardId = form.dataset.cardId;
+
+        fetch('/', {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                document.getElementById('modalMessageFeedback').textContent = data.error;
+                const modal = new bootstrap.Modal(document.getElementById('FeedbackModal'));
+                modal.show();
+            } else if (data.success) {
+                document.getElementById('modalMessageFeedback').textContent = data.success;
+
+                const modal = new bootstrap.Modal(document.getElementById('FeedbackModal'));
+                modal.show();
+
+                form.reset();
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка при отправке запроса:', error);
+        });
+    });
+});
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -88,12 +124,21 @@ function getCookie(name) {
 }
 
 const profileLink = document.getElementById('profileLink');
+const profileLink2 = document.getElementById('profileLink2');
 const sidebar = document.getElementById('sidebar');
 const closeSidebar = document.getElementById('closeSidebar');
 const overlay = document.getElementById('overlay');
 
 if (profileLink) {
     profileLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        sidebar.classList.add('open');
+        overlay.classList.add('show');
+    });
+}
+
+if (profileLink2) {
+    profileLink2.addEventListener('click', function(e) {
         e.preventDefault();
         sidebar.classList.add('open');
         overlay.classList.add('show');
@@ -110,4 +155,19 @@ if (closeSidebar) {
 overlay.addEventListener('click', function() {
     sidebar.classList.remove('open');
     overlay.classList.remove('show');
+});
+
+document.getElementById('burgerMenu').addEventListener('click', function (event) {
+    let menu = document.getElementById('mobileNav');
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    event.stopPropagation();
+});
+
+document.addEventListener('click', function (event) {
+    let menu = document.getElementById('mobileNav');
+    let burger = document.getElementById('burgerMenu');
+
+    if (menu.style.display === 'block' && !menu.contains(event.target) && !burger.contains(event.target)) {
+        menu.style.display = 'none';
+    }
 });

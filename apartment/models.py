@@ -18,7 +18,7 @@ class DataBooking(models.Model):
     name = models.CharField(max_length=50, verbose_name='Имя')
     surname = models.CharField(max_length=50, verbose_name='Фамилия')
     patronymic = models.CharField(max_length=50, verbose_name='Отчество', null=True, blank=True)
-    phone = models.CharField(max_length=11, verbose_name='Номер телефона')
+    phone = models.CharField(max_length=50, verbose_name='Номер телефона')
     email = models.EmailField(verbose_name='Email')
     comment = models.TextField(verbose_name='Комментарий', null=True, blank=True)
 
@@ -55,3 +55,12 @@ class Booking(models.Model):
 
     def __str__(self):
         return f'Пользователь: {self.user.username}. Дата бронирования: {self.start_date} - {self.end_date}. Статус: {self.status}'
+
+
+class Feedback(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    phone = models.CharField(max_length=50, verbose_name='Телефон')
+    comment = models.TextField(verbose_name='Сообщение')
+
+    def __str__(self):
+        return f'Вопрос от {self.name}. Вопрос: {self.comment}'
