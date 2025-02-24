@@ -26,7 +26,7 @@ def main(request):
 
                 message = (f'💬 <b>Новое сообщение!</b>\n\n'
                            f'👤 Имя: <b>{form.cleaned_data.get("name")}</b>\n'
-                           f'📱 Телефон: <b>{form.cleaned_data.get("phone")}</b>'
+                           f'📱 Телефон: <b>{form.cleaned_data.get("phone")}</b>\n'
                            f'💬 Сообщение: <b>{form.cleaned_data.get("comment")}</b>'
                            )
                 send_telegram_feedback.delay(message)
