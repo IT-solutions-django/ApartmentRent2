@@ -7,7 +7,7 @@ from apartment.models import Apartment, Booking
 from django.http import JsonResponse
 from .utils.send_tg import send_telegram_message
 import json
-from rent.tasks import send_telegram_message
+from rent.tasks import send_telegram_message, send_telegram_feedback
 
 
 def main(request):
@@ -23,6 +23,14 @@ def main(request):
             form = FeedbackForm(request.POST)
             if form.is_valid():
                 form.save()
+
+                message = (f'💬 <b>Новое сообщение!</b>\n\n'
+                           f'👤 Имя: <b>{form.cleaned_data.get("name")}</b>\n'
+                           f'📱 Телефон: <b>{form.cleaned_data.get("phone")}</b>'
+                           f'💬 Сообщение: <b>{form.cleaned_data.get("comment")}</b>'
+                           )
+                send_telegram_feedback.delay(message)
+
                 return JsonResponse({'success': 'Ваша заявка отправлена, менеджер свяжется с вами в ближайшее время',
                                      'redirect_url': f'{request.path}'})
             else:
