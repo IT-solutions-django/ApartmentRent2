@@ -222,6 +222,12 @@
                         <span style="font-size: 24px; font-weight: 500;">К оплате:</span>
                         <span style="font-size: 32px; font-family: Manrope;"><strong id="total-price" data-default-price="{{ card_info.price|round_price }}">{{ card_info.price|round_price }}</strong></span>
                     </div>
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" id="terms-checkbox" required>
+                        <label class="form-check-label" for="terms-checkbox" style="font-size: 14px;">
+                            Подтверждаю факт ознакомления и принятия условий <a href="#" target="_blank" style="color: #284356 !important; font-weight: 600;">пользовательского соглашения</a>
+                        </label>
+                    </div>
                     <div class="mt-3" style="text-align: right;">
                         <button class="btn btn-primary w-50 bron reservation-bron-button" style="font-weight: 500;">Забронировать</button>
                     </div>

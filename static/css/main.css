@@ -160,6 +160,12 @@ body {
     height: 333px;
 }
 
+.form-check-input:checked {
+    background-color: #284356 !important;
+    color: #284356 !important;
+    border-color: #284356 !important;
+}
+
 .card {
     flex: 0 0 32%;
     box-sizing: border-box;
@@ -310,7 +316,7 @@ a {
 .info-bron {
     border-radius: 10px !important;
     border: 1px solid #284356 !important;
-    height: 506px;
+    height: auto;
     margin-top: -60px;
 }
 

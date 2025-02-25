@@ -53,7 +53,7 @@ def list_orders(message):
 
     if orders:
         for order in orders:
-            messages = f'<b>Имя</b>: {order.name}\b<b>Телефон</b>: {order.phone}\n<b>Сообщение</b>: {order.comment}'
+            messages = f'<b>Имя</b>: {order.name}\n<b>Телефон</b>: {order.phone}\n<b>Сообщение</b>: {order.comment}'
 
             markup = types.InlineKeyboardMarkup()
             ready_button = types.InlineKeyboardButton("✅ Готово", callback_data=f'ready_{order.id}')
