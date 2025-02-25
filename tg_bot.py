@@ -22,7 +22,7 @@ BookingStatus = {
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     bot.reply_to(message,
-                 "Бот для бронирования квартир!\n\n<b>Команды:</b>\n/active_bookings - Активные бронирования\n/notConfirmed_bookings - Не подтвержденные бронирования",
+                 "Бот для бронирования квартир!\n\n<b>Команды:</b>\n/active_bookings - Активные бронирования\n/not_bookings - Не подтвержденные бронирования",
                  parse_mode="html")
 
 
@@ -64,7 +64,7 @@ def list_orders(message):
         bot.reply_to(message, 'Нет активных заявок.')
 
 
-@bot.message_handler(commands=['notConfirmed_bookings'])
+@bot.message_handler(commands=['not_bookings'])
 def list_bookings(message):
     bookings = Booking.objects.filter(status='P')
     if bookings:
