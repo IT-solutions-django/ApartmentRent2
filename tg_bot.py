@@ -5,8 +5,9 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'rent.settings'
 django.setup()
 
 import telebot
-from apartment.models import Booking
+from apartment.models import Booking, Feedback
 from telebot import types
+from rent.tasks import send_email_booking
 
 bot = telebot.TeleBot("7945761248:AAEtjVm4drm3nxgcEee-r3nu9gMLjPQk0_A")
 
@@ -36,15 +37,31 @@ def list_bookings(message):
             messages = f'<b>Пользователь:</b> {booking.user.username}\n<b>Статус:</b> {status}\n\n<b>Данные бронирования:</b>\n- {apart.name}\n- до {apart.quantity_people} мест • {apart.square} м²\n- {apart.price}/сутки\n- Дата бронирования: с <b>{booking.start_date}</b> до <b>{booking.end_date}</b>\n\n<b>Контактная информация:</b>\nИмя - {data_booking.name}\nФамилия - {data_booking.surname}\nТелефон - {data_booking.phone}\nEmail - {data_booking.email}\nКомментарий - {data_booking.comment}'
 
             markup = types.InlineKeyboardMarkup()
-            confirm_button = types.InlineKeyboardButton("✅ Подтвердить", callback_data=f'confirm_{booking.id}')
             cancel_button = types.InlineKeyboardButton("❌ Отменить", callback_data=f'cancel_{booking.id}')
             completed_button = types.InlineKeyboardButton("☑️ Завершить", callback_data=f'completed_{booking.id}')
-            markup.add(confirm_button, cancel_button)
+            markup.add(cancel_button)
             markup.add(completed_button)
 
             bot.reply_to(message, messages, reply_markup=markup, parse_mode='HTML')
     else:
         bot.reply_to(message, 'Нет забронированных квартир.')
+
+
+@bot.message_handler(commands=['active_orders'])
+def list_orders(message):
+    orders = Feedback.objects.all()
+
+    if orders:
+        for order in orders:
+            messages = f'<b>Имя</b>: {order.name}\b<b>Телефон</b>: {order.phone}\n<b>Сообщение</b>: {order.comment}'
+
+            markup = types.InlineKeyboardMarkup()
+            ready_button = types.InlineKeyboardButton("✅ Готово", callback_data=f'ready_{order.id}')
+
+            markup.add(ready_button)
+            bot.reply_to(message, messages, reply_markup=markup, parse_mode='HTML')
+    else:
+        bot.reply_to(message, 'Нет активных заявок.')
 
 
 @bot.message_handler(commands=['notConfirmed_bookings'])
@@ -77,16 +94,41 @@ def handle_booking_action(call):
     if action == "confirm":
         booking.status = Booking.BookingStatus.CONFIRMED
         booking.save()
+
+        message_booking = f'Ваша заявка на бронирование подтверждена'
+        send_email_booking.delay(booking.data_booking.email, 'Статус бронирования', message_booking,
+                                 '37.77.106.122')
+
         bot.answer_callback_query(call.id, text="Бронирование подтверждено ✅")
         bot.reply_to(call.message, f'✅ Бронирование пользователя {booking.user.username} подтверждено.')
     elif action == "cancel":
         booking.delete()
+
+        message_booking = f'Ваша заявка на бронирование отменена'
+        send_email_booking.delay(booking.data_booking.email, 'Статус бронирования', message_booking,
+                                 '37.77.106.122')
+
         bot.answer_callback_query(call.id, text="Бронирование отменено ❌")
         bot.reply_to(call.message, f'❌ Бронирование пользователя {booking.user.username} отменено.')
     elif action == "completed":
         booking.delete()
+
+        message_booking = f'Ваше бронирование завершено'
+        send_email_booking.delay(booking.data_booking.email, 'Статус бронирования', message_booking,
+                                 '37.77.106.122')
+
         bot.answer_callback_query(call.id, text="Бронирование завершено ☑️")
         bot.reply_to(call.message, f'☑️ Бронирование пользователя {booking.user.username} завершено.')
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith(('ready_',)))
+def handle_booking_action(call):
+    action, order_id = call.data.split('_')
+    order = Feedback.objects.get(id=int(order_id))
+
+    order.delete()
+    bot.answer_callback_query(call.id, text="Заявка обработана ☑️")
+    bot.reply_to(call.message, f'☑️ Заявка пользователя {order.name} обработана.')
 
 
 def start_bot():

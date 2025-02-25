@@ -7,7 +7,7 @@ from apartment.models import Apartment, Booking
 from django.http import JsonResponse
 from .utils.send_tg import send_telegram_message
 import json
-from rent.tasks import send_telegram_message, send_telegram_feedback
+from rent.tasks import send_telegram_message, send_telegram_feedback, send_email_booking
 
 
 def main(request):
@@ -152,6 +152,10 @@ def reservation(request, card_id):
                        f"👤 Пользователь: <b>{request.user.username}</b>\n"
                        f"📅 Даты: <b>{date_start} - {date_end}</b>")
             send_telegram_message.delay(message)
+
+            message_booking = f'Ваша заявка на бронирование принята. Статус: Ожидание подтверждения'
+            send_email_booking.delay(apart_booking.data_booking.email, 'Заявка на бронирование', message_booking,
+                                     '37.77.106.122')
 
             return JsonResponse({'success': 'Бронирование успешно!', 'redirect_url': '/catalog'})
 

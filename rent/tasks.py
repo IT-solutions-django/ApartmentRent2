@@ -25,3 +25,21 @@ def send_telegram_feedback(message):
         "parse_mode": "HTML",
     }
     requests.post(url, data=payload)
+
+
+@shared_task
+def send_email_booking(recipient, subject, content, ip):
+    url = "https://sendemail.space/send-email/"
+    data = {
+        "recipient": recipient,
+        "subject": subject,
+        "content": content,
+        "ip": ip
+    }
+
+    try:
+        response = requests.post(url, json=data, timeout=10)
+        response_data = response.json()
+        return response_data  
+    except requests.RequestException as e:
+        return {"status": "failed", "errors": str(e)}
