@@ -3,12 +3,29 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
+class ApartmentPhoto(models.Model):
+    image = models.ImageField(upload_to='apartments/', verbose_name='Фото')
+
+    class Meta:
+        verbose_name = "Фотография"
+        verbose_name_plural = "Фотографии"
+
+    def __str__(self):
+        return self.image.name
+
+
 class Apartment(models.Model):
     name = models.CharField(max_length=150, verbose_name='Название')
     quantity_people = models.IntegerField(verbose_name='Кол-во людей')
     square = models.IntegerField(verbose_name='Площадь', help_text='в м²')
     price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Цена', help_text='за сутку')
     available = models.BooleanField(verbose_name='Доступна', default=True)
+    photos = models.ManyToManyField('ApartmentPhoto', related_name='apartments', blank=True, verbose_name='Фотографии',
+                                    null=True)
+
+    class Meta:
+        verbose_name = "Квартира"
+        verbose_name_plural = "Квартиры"
 
     def __str__(self):
         return f'{self.name} | {self.price}'
@@ -22,6 +39,13 @@ class DataBooking(models.Model):
     email = models.EmailField(verbose_name='Email')
     comment = models.TextField(verbose_name='Комментарий', null=True, blank=True)
 
+    class Meta:
+        verbose_name = "Данные бронирования"
+        verbose_name_plural = "Данные бронирования"
+
+    def __str__(self):
+        return f'ФИ: {self.surname} {self.name}. Почта: {self.email}. Комментарий: {self.comment}'
+
 
 class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
@@ -30,6 +54,10 @@ class Booking(models.Model):
     end_date = models.DateField(verbose_name='Дата отъезда')
     data_booking = models.ForeignKey(DataBooking, on_delete=models.CASCADE, verbose_name='Данные бронирования')
     total_price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Итоговая стоимость", default=0)
+
+    class Meta:
+        verbose_name = "Бронирование"
+        verbose_name_plural = "Бронирования"
 
     def save(self, *args, **kwargs):
         if self.start_date and self.end_date and self.apartment:
@@ -62,5 +90,9 @@ class Feedback(models.Model):
     phone = models.CharField(max_length=50, verbose_name='Телефон')
     comment = models.TextField(verbose_name='Сообщение')
 
+    class Meta:
+        verbose_name = "Заявка"
+        verbose_name_plural = "Заявки"
+
     def __str__(self):
-        return f'Вопрос от {self.name}. Вопрос: {self.comment}'
+        return f'Заявка от {self.name}. Вопрос: {self.comment}'

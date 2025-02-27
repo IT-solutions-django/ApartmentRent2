@@ -38,9 +38,12 @@ services:
     image: nginx:latest
     container_name: nginx_server
     ports:
+      - "443:443"  # Для HTTPS
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl/certificate.crt:/etc/ssl/certs/certificate.crt
+      - ./ssl/certificate.key:/etc/ssl/private/certificate.key
       - static_volume:/app/static
       - media_volume:/app/media
     depends_on:
