@@ -99,6 +99,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CSRF_TRUSTED_ORIGINS = ['https://gostivl.ru']
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
