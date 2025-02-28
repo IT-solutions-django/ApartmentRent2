@@ -95,14 +95,14 @@ def handle_booking_action(call):
         booking.status = Booking.BookingStatus.CONFIRMED
         booking.save()
 
-        message_booking = f'Ваша заявка на бронирование квартиры подтверждена. Ссылка на квартиру: http://37.77.106.122/card/{booking.apartment.id}/'
+        message_booking = f'Ваша заявка на бронирование квартиры подтверждена.\nСсылка на квартиру: https://gostivl.ru/card/{booking.apartment.id}/\nДаты бронирования: с {booking.start_date} до {booking.end_date}.\n\n\nС уважением, GOSTI VLADIVOSTOK.'
         send_email_booking.delay(booking.data_booking.email, 'Статус бронирования', message_booking,
                                  '37.77.106.122')
 
         bot.answer_callback_query(call.id, text="Бронирование подтверждено ✅")
         bot.reply_to(call.message, f'✅ Бронирование пользователя {booking.user.username} подтверждено.')
     elif action == "cancel":
-        message_booking = f'Ваша заявка на бронирование квартиры отменена. Ссылка на квартиру: http://37.77.106.122/card/{booking.apartment.id}/'
+        message_booking = f'Ваша заявка на бронирование квартиры отменена.\nСсылка на квартиру: https://gostivl.ru/card/{booking.apartment.id}/\nДаты бронирования: с {booking.start_date} до {booking.end_date}.\n\n\nС уважением, GOSTI VLADIVOSTOK.'
         send_email_booking.delay(booking.data_booking.email, 'Статус бронирования', message_booking,
                                  '37.77.106.122')
 
@@ -111,7 +111,7 @@ def handle_booking_action(call):
 
         booking.delete()
     elif action == "completed":
-        message_booking = f'Ваше бронирование квартиры завершено. Ссылка на квартиру: http://37.77.106.122/card/{booking.apartment.id}/'
+        message_booking = f'Ваше бронирование квартиры завершено.\nСсылка на квартиру: https://gostivl.ru/card/{booking.apartment.id}/\nДаты бронирования: с {booking.start_date} до {booking.end_date}.\n\n\nС уважением, GOSTI VLADIVOSTOK.'
         send_email_booking.delay(booking.data_booking.email, 'Статус бронирования', message_booking,
                                  '37.77.106.122')
 

@@ -18,10 +18,11 @@ class Apartment(models.Model):
     name = models.CharField(max_length=150, verbose_name='Название')
     quantity_people = models.IntegerField(verbose_name='Кол-во людей')
     square = models.IntegerField(verbose_name='Площадь', help_text='в м²')
-    price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Цена', help_text='за сутку')
+    price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name='Цена', help_text='за сутки')
     available = models.BooleanField(verbose_name='Доступна', default=True)
     photos = models.ManyToManyField('ApartmentPhoto', related_name='apartments', blank=True, verbose_name='Фотографии',
                                     null=True)
+    street = models.TextField(verbose_name='Улица', null=True, blank=True)
 
     class Meta:
         verbose_name = "Квартира"

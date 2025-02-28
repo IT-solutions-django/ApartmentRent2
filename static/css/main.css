@@ -956,5 +956,8 @@ textarea {
     .footer-mobile .text-end {
         margin-left: auto!important;
     }
+    .mobile-card-photo {
+        width: 100%!important;
+    }
 }
 

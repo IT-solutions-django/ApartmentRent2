@@ -153,7 +153,7 @@ def reservation(request, card_id):
                        f"📅 Даты: <b>{date_start} - {date_end}</b>")
             send_telegram_message.delay(message)
 
-            message_booking = f'Ваша заявка на бронирование квартиры принята. Ссылка на квартиру: http://37.77.106.122/card/{card_id}/. Статус: Ожидание подтверждения'
+            message_booking = f'Ваша заявка на бронирование квартиры принята.\nСсылка на квартиру: https://gostivl.ru/card/{card_id}/.\nДаты бронирования: с {date_start} до {date_end}\nСтатус: Ожидание подтверждения.\n\nПока предлагаем вам ознакомиться с списком достопримечательностей Владивостока, которые стоит посетить:\nРестораны - https://www.tripadvisor.ru/Restaurants-g298496-Vladivostok_Primorsky_Krai_Far_Eastern_District.html\nРазвлечения - https://www.tripadvisor.ru/Attractions-g298496-Activities-c56-Vladivostok_Primorsky_Krai_Far_Eastern_District.html\nМероприятия - https://www.tripadvisor.ru/Attractions-g298496-Activities-c58-Vladivostok_Primorsky_Krai_Far_Eastern_District.html\n\n\nС уважением, GOSTI VLADIVOSTOK.'
             send_email_booking.delay(apart_booking.data_booking.email, 'Заявка на бронирование', message_booking,
                                      '37.77.106.122')
 
