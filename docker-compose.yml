@@ -61,6 +61,7 @@ services:
       - web
     networks:
       - app_network
+    restart: always
 
 networks:
   app_network:
