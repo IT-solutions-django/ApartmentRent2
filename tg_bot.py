@@ -9,6 +9,13 @@ from apartment.models import Booking, Feedback
 from telebot import types
 from rent.tasks import send_email_booking
 
+ALLOWED_USERS = {661612764, 777759367}
+
+
+def is_allowed(message):
+    return message.chat.id in ALLOWED_USERS
+
+
 bot = telebot.TeleBot("7945761248:AAEtjVm4drm3nxgcEee-r3nu9gMLjPQk0_A")
 
 BookingStatus = {
@@ -21,6 +28,10 @@ BookingStatus = {
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
+    if not is_allowed(message):
+        bot.reply_to(message, "⛔ У вас нет доступа к этому боту.")
+        return
+
     bot.reply_to(message,
                  "Бот для бронирования квартир!\n\n<b>Команды:</b>\n/active_bookings - Активные бронирования\n/not_bookings - Не подтвержденные бронирования",
                  parse_mode="html")
@@ -28,6 +39,10 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['active_bookings'])
 def list_bookings(message):
+    if not is_allowed(message):
+        bot.reply_to(message, "⛔ У вас нет доступа к этому боту.")
+        return
+
     bookings = Booking.objects.filter(status='C')
     if bookings:
         for booking in bookings:
@@ -49,6 +64,10 @@ def list_bookings(message):
 
 @bot.message_handler(commands=['active_orders'])
 def list_orders(message):
+    if not is_allowed(message):
+        bot.reply_to(message, "⛔ У вас нет доступа к этому боту.")
+        return
+
     orders = Feedback.objects.all()
 
     if orders:
@@ -66,6 +85,10 @@ def list_orders(message):
 
 @bot.message_handler(commands=['not_bookings'])
 def list_bookings(message):
+    if not is_allowed(message):
+        bot.reply_to(message, "⛔ У вас нет доступа к этому боту.")
+        return
+
     bookings = Booking.objects.filter(status='P')
     if bookings:
         for booking in bookings:
@@ -88,6 +111,10 @@ def list_bookings(message):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith(('confirm_', 'cancel_', 'completed_')))
 def handle_booking_action(call):
+    if not is_allowed(call.message):
+        bot.reply_to(call.message, "⛔ У вас нет доступа к этому боту.")
+        return
+
     action, booking_id = call.data.split('_')
     booking = Booking.objects.get(id=int(booking_id))
 
@@ -123,6 +150,10 @@ def handle_booking_action(call):
 
 @bot.callback_query_handler(func=lambda call: call.data.startswith(('ready_',)))
 def handle_booking_action(call):
+    if not is_allowed(call.message):
+        bot.reply_to(call.message, "⛔ У вас нет доступа к этому боту.")
+        return
+
     action, order_id = call.data.split('_')
     order = Feedback.objects.get(id=int(order_id))
 
