@@ -20,6 +20,7 @@ from apartment.views import main, catalog, card, reservation
 from user.views import login_view, register_view, logout_view
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.static import serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,6 +31,8 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('register/', register_view, name='register'),
     path('logout/', logout_view, name='logout'),
+    path('sitemap.xml', serve, {'document_root': settings.BASE_DIR, 'path': 'sitemap.xml'}),
+    path('robots.txt', serve, {'document_root': settings.BASE_DIR, 'path': 'robots.txt'}),
 ]
 
 if settings.DEBUG:
