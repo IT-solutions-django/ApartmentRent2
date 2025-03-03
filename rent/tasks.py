@@ -2,7 +2,7 @@ from celery import shared_task
 import requests
 
 TELEGRAM_BOT_TOKEN = "7945761248:AAEtjVm4drm3nxgcEee-r3nu9gMLjPQk0_A"
-TELEGRAM_CHAT_ID = "777759367"
+TELEGRAM_CHAT_ID = "661612764"
 
 
 @shared_task
