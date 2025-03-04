@@ -201,7 +201,7 @@
     </div>
 
     <!-- Миниатюры -->
-    <div class="d-flex mt-2">
+    <div class="d-flex mt-2" style="flex-wrap: wrap;">
         {% for photo in card_info.photos.all %}
             <img src="{{ photo.image.url }}" class="img-thumbnail me-2 thumb" alt="{{ photo.description }}"
                  style="width: 80px; height: 50px; object-fit: cover; cursor: pointer;"
