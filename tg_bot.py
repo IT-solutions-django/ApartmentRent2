@@ -9,7 +9,7 @@ from apartment.models import Booking, Feedback
 from telebot import types
 from rent.tasks import send_email_booking
 
-ALLOWED_USERS = {661612764, 777759367}
+ALLOWED_USERS = {661612764, 777759367, 882495943}
 
 
 def is_allowed(message):
@@ -49,7 +49,7 @@ def list_bookings(message):
             data_booking = booking.data_booking
             apart = booking.apartment
             status = BookingStatus[booking.status]
-            messages = f'<b>Пользователь:</b> {booking.user.username}\n<b>Статус:</b> {status}\n\n<b>Данные бронирования:</b>\n- {apart.name}\n- до {apart.quantity_people} мест • {apart.square} м²\n- {apart.price}/сутки\n- Дата бронирования: с <b>{booking.start_date}</b> до <b>{booking.end_date}</b>\n\n<b>Контактная информация:</b>\nИмя - {data_booking.name}\nФамилия - {data_booking.surname}\nТелефон - {data_booking.phone}\nEmail - {data_booking.email}\nКомментарий - {data_booking.comment}'
+            messages = f'<b>Пользователь:</b> {booking.user.username}\n<b>Статус:</b> {status}\n\n<b>Данные бронирования:</b>\n- {apart.name}\n- {apart.street}\n- до {apart.quantity_people} мест • {apart.square} м²\n- {apart.price}/сутки\n- Дата бронирования: с <b>{booking.start_date}</b> до <b>{booking.end_date}</b>\n\n<b>Контактная информация:</b>\nИмя - {data_booking.name}\nФамилия - {data_booking.surname}\nТелефон - {data_booking.phone}\nEmail - {data_booking.email}\nКомментарий - {data_booking.comment}\n\nСсылка на квартиру: https://gostivl.ru/card/{apart.id}'
 
             markup = types.InlineKeyboardMarkup()
             cancel_button = types.InlineKeyboardButton("❌ Отменить", callback_data=f'cancel_{booking.id}')
@@ -95,7 +95,7 @@ def list_bookings(message):
             data_booking = booking.data_booking
             apart = booking.apartment
             status = BookingStatus[booking.status]
-            messages = f'<b>Пользователь:</b> {booking.user.username}\n<b>Статус:</b> {status}\n\n<b>Данные бронирования:</b>\n- {apart.name}\n- до {apart.quantity_people} мест • {apart.square} м²\n- {apart.price}/сутки\n- Дата бронирования: с <b>{booking.start_date}</b> до <b>{booking.end_date}</b>\n\n<b>Контактная информация:</b>\nИмя - {data_booking.name}\nФамилия - {data_booking.surname}\nТелефон - {data_booking.phone}\nEmail - {data_booking.email}\nКомментарий - {data_booking.comment}'
+            messages = f'<b>Пользователь:</b> {booking.user.username}\n<b>Статус:</b> {status}\n\n<b>Данные бронирования:</b>\n- {apart.name}\n- {apart.street}\n- до {apart.quantity_people} мест • {apart.square} м²\n- {apart.price}/сутки\n- Дата бронирования: с <b>{booking.start_date}</b> до <b>{booking.end_date}</b>\n\n<b>Контактная информация:</b>\nИмя - {data_booking.name}\nФамилия - {data_booking.surname}\nТелефон - {data_booking.phone}\nEmail - {data_booking.email}\nКомментарий - {data_booking.comment}\n\nСсылка на квартиру: https://gostivl.ru/card/{apart.id}'
 
             markup = types.InlineKeyboardMarkup()
             confirm_button = types.InlineKeyboardButton("✅ Подтвердить", callback_data=f'confirm_{booking.id}')

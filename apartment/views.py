@@ -150,6 +150,7 @@ def reservation(request, card_id):
             message = (f"🏠 <b>Новое бронирование!</b>\n"
                        f"📍 Квартира: <b>{apart_booking.apartment.name}</b>\n"
                        f"👤 Пользователь: <b>{request.user.username}</b>\n"
+                       f"📱 Телефон: <b>{apart_booking.data_booking.phone}</b>\n"
                        f"📅 Даты: <b>{date_start} - {date_end}</b>")
             send_telegram_message.delay(message)
 
