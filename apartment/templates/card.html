@@ -585,31 +585,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <script>
     let images = [];
-    let currentIndex = 0;
+    let currentIndex_img = 0;
     let startX = 0;  // Для отслеживания свайпа
 
     document.querySelectorAll('.carousel-item img').forEach((img, index) => {
         images.push(img.src);
         img.addEventListener('click', function () {
-            currentIndex = index;
+            currentIndex_img = index;
             updateLightbox();
             new bootstrap.Modal(document.getElementById('lightboxModal')).show();
         });
     });
 
     function updateLightbox() {
-        document.getElementById('lightboxImage').src = images[currentIndex];
+        document.getElementById('lightboxImage').src = images[currentIndex_img];
     }
 
     document.getElementById('prevLightbox').addEventListener('click', function (event) {
         event.stopPropagation();
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        currentIndex_img = (currentIndex_img - 1 + images.length) % images.length;
         updateLightbox();
     });
 
     document.getElementById('nextLightbox').addEventListener('click', function (event) {
         event.stopPropagation();
-        currentIndex = (currentIndex + 1) % images.length;
+        currentIndex_img = (currentIndex_img + 1) % images.length;
         updateLightbox();
     });
 
@@ -633,9 +633,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let diff = startX - endX;
 
         if (diff > 50) {
-            currentIndex = (currentIndex + 1) % images.length;
+            currentIndex_img = (currentIndex_img + 1) % images.length;
         } else if (diff < -50) {
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            currentIndex_img = (currentIndex_img - 1 + images.length) % images.length;
         }
         updateLightbox();
     });
