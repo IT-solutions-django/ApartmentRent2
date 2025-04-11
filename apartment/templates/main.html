@@ -96,45 +96,7 @@
             <p>{{ user.username }}</p>
             {% endif %}
         </div>
-        <div class="sidebar-content mt-5" style="text-align: left;">
-            <span class=" fs-6">Бронирования</span>
-            <hr>
-            {% if active_bookings %}
-            {% for booking in active_bookings %}
-            <div class="active-booking">
-                <div class="row mb-3">
-                <div class="col-12">
-                    <a href="{% url 'card' booking.apartment.id %}">
-                        <img src="{{booking.apartment.photos.first.image.url}}" alt="Фото квартиры" class="img-fluid" style="width: 100%!important; height: 250px!important; border-radius: 10px; object-fit: cover;">
-                    </a>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'card' booking.apartment.id %}" class="fs-6">{{ booking.apartment.name }}</a>
-                            <span class="text-muted"><i class="bi bi-people fs-6"></i> до {{ booking.apartment.quantity_people }} мест</span>
-                            <span class="text-muted"><i class="bi bi-arrows-angle-contract"></i> {{ booking.apartment.square }} м²</span>
-                        </div>
-                        <div class="d-flex justify-content-between mt-4">
-                            <span><strong>Заезд:</strong> {{ booking.start_date|date:"d-m-Y" }} <span class="text-muted ms-3">c 14:00</span></span>
-                        </div>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span><strong>Выезд:</strong> {{ booking.end_date|date:"d-m-Y" }} <span class="text-muted ms-3">до 12:00</span></span>
-                        </div>
-                        <div class="d-flex justify-content-between mt-5">
-                            <span>Стоимость</span>
-                            <span>{{ booking.total_price|round_price }} ₽ <span class="card-text text-muted fs-6">/ {{ booking.get_total_days }} суток</span></span>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p>Нет активных бронирований</p>
-        {% endif %}
-        </div>
+
         <div class="sidebar-content text-center">
             <a href="{% url 'logout' %}" id="logoutLink" class="text-dark">
                 <i class="bi bi-box-arrow-right fs-4 me-1"></i> Выйти
@@ -181,30 +143,35 @@
 
     <!-- Форма для бронирования -->
     <div class="position-absolute start-50 translate-middle-x bg-white shadow p-4 rounded-3 w-75 start-form-bron" style="bottom: -40px; background-color: #F7F7F7 !important;">
-        <form class="row g-3" method="post">
-            {% csrf_token %}
-            <div class="col-md-3">
-                <div class="form-floating">
-                    <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " min="{{ date_now }}" onchange="updateMinCheckoutDate()">
-                    <label for="check-in-date">Заезд</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating">
-                    <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " min="{{ date_tomorrow }}">
-                    <label for="check-out-date">Выезд</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating">
-                    <input type="number" id="guest-form" name="count-people" class="form-control" placeholder=" " required>
-                    <label for="guest-form">Количество гостей</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <button class="btn btn-primary w-100 reserve">Забронировать <i class="bi bi-arrow-up-right fs-6" style="margin-left: 10px;"></i></button>
-            </div>
-        </form>
+<!--        <form class="row g-3" method="post">-->
+<!--            {% csrf_token %}-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="form-floating">-->
+<!--                    <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " min="{{ date_now }}" onchange="updateMinCheckoutDate()">-->
+<!--                    <label for="check-in-date">Заезд</label>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="form-floating">-->
+<!--                    <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " min="{{ date_tomorrow }}">-->
+<!--                    <label for="check-out-date">Выезд</label>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <div class="form-floating">-->
+<!--                    <input type="number" id="guest-form" name="count-people" class="form-control" placeholder=" " required>-->
+<!--                    <label for="guest-form">Количество гостей</label>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-3">-->
+<!--                <button class="btn btn-primary w-100 reserve">Забронировать <i class="bi bi-arrow-up-right fs-6" style="margin-left: 10px;"></i></button>-->
+<!--            </div>-->
+<!--        </form>-->
+        <div id="hr-widget"></div>
+    <script type="module" src="https://homereserve.ru/widget.js"></script>
+    <script type="module">
+        window.homereserve.initWidgetSearch({"token":"AAC9yg","tag":"Web"})
+    </script>
     </div>
 </section>
 
@@ -287,7 +254,7 @@
     <span class="fs-2 text-left mb-4 services-title" style="font-size: 48px; font-weight: 500; line-height: 48px;">Услуги</span>
 
     <!-- Блок с эмблемами -->
-    <div class="row justify-content-between text-center mb-5 mt-5 services-block-img">
+    <div class="row justify-content-between text-center mt-5 services-block-img">
         <div class="col">
             <img src="{% static 'img/car.png' %}" alt="Сервис 1" class="img-fluid w-42">
             <p class="mt-2" style="font-size: 20px; font-weight: 500;">Трансфер, Парковка</p>
@@ -311,30 +278,32 @@
     </div>
 
     <!-- Форма бронирования -->
-    <form class="row g-3" method="post">
-        {% csrf_token %}
-        <div class="col-md-3">
-                    <div class="form-floating">
-                        <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " min="{{ date_now }}" onchange="updateMinCheckoutDate()">
-                        <label for="check-in-date">Заезд</label>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-floating">
-                        <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " min="{{ date_tomorrow }}">
-                        <label for="check-out-date">Выезд</label>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-floating">
-                        <input type="number" id="guest-form" name="count-people" class="form-control" placeholder=" " required>
-                        <label for="guest-form">Количество гостей</label>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <button class="btn btn-primary w-100 reserve">Забронировать <i class="bi bi-arrow-up-right fs-6" style="margin-left: 10px;"></i></button>
-                </div>
-    </form>
+<!--    <form class="row g-3" method="post">-->
+<!--        {% csrf_token %}-->
+<!--        <div class="col-md-3">-->
+<!--                    <div class="form-floating">-->
+<!--                        <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " min="{{ date_now }}" onchange="updateMinCheckoutDate()">-->
+<!--                        <label for="check-in-date">Заезд</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3">-->
+<!--                    <div class="form-floating">-->
+<!--                        <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " min="{{ date_tomorrow }}">-->
+<!--                        <label for="check-out-date">Выезд</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3">-->
+<!--                    <div class="form-floating">-->
+<!--                        <input type="number" id="guest-form" name="count-people" class="form-control" placeholder=" " required>-->
+<!--                        <label for="guest-form">Количество гостей</label>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-3">-->
+<!--                    <button class="btn btn-primary w-100 reserve">Забронировать <i class="bi bi-arrow-up-right fs-6" style="margin-left: 10px;"></i></button>-->
+<!--                </div>-->
+<!--    </form>-->
+
+
 </section>
 
     <section class="container my-5 position-relative mt-5 reviews-container" id="reviews">

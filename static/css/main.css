@@ -606,9 +606,6 @@ textarea {
     .banner {
         height: 259px !important;
     }
-    .start-form-bron {
-        bottom: -297px !important;
-    }
     .banner-text h2 {
         font-size: 18px !important;
     }
@@ -624,9 +621,6 @@ textarea {
         font-size: 14px !important;
         padding: 8px 10px !important;
         border-radius: 5px !important;
-    }
-    .cards-advantages {
-        margin-top: 360px !important;
     }
     .card-advantages {
         margin-bottom: 45px !important;

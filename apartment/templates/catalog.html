@@ -18,6 +18,12 @@
     <script src="{% static 'js/main.js' %}" defer></script>
     <script src="{% static 'js/imask/Imask.min.js' %}"></script>
 
+    <style>
+        .hotels {
+            margin: 0 0!important;
+        }
+    </style>
+
     <!-- Yandex.Metrika counter -->
 <script type="text/javascript" >
    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -96,45 +102,7 @@
             <p>{{ user.username }}</p>
             {% endif %}
         </div>
-        <div class="sidebar-content mt-5" style="text-align: left;">
-            <span class=" fs-6">Бронирования</span>
-            <hr>
-            {% if active_bookings %}
-            {% for booking in active_bookings %}
-            <div class="active-booking">
-                <div class="row mb-3">
-                <div class="col-12">
-                    <a href="{% url 'card' booking.apartment.id %}">
-                        <img src="{{booking.apartment.photos.first.image.url}}" alt="Фото квартиры" class="img-fluid" style="width: 100%!important; height: 250px!important; border-radius: 10px; object-fit: cover;">
-                    </a>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class="d-flex justify-content-between">
-                            <a href="{% url 'card' booking.apartment.id %}" class="fs-6">{{ booking.apartment.name }}</a>
-                            <span class="text-muted"><i class="bi bi-people fs-6"></i> до {{ booking.apartment.quantity_people }} мест</span>
-                            <span class="text-muted"><i class="bi bi-arrows-angle-contract"></i> {{ booking.apartment.square }} м²</span>
-                        </div>
-                        <div class="d-flex justify-content-between mt-4">
-                            <span><strong>Заезд:</strong> {{ booking.start_date|date:"d-m-Y" }} <span class="text-muted ms-3">c 14:00</span></span>
-                        </div>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span><strong>Выезд:</strong> {{ booking.end_date|date:"d-m-Y" }} <span class="text-muted ms-3">до 12:00</span></span>
-                        </div>
-                        <div class="d-flex justify-content-between mt-5">
-                            <span>Стоимость</span>
-                            <span>{{ booking.total_price|round_price }} ₽ <span class="card-text text-muted fs-6">/ {{ booking.get_total_days }} суток</span></span>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-            </div>
-            {% endfor %}
-        {% else %}
-            <p>Нет активных бронирований</p>
-        {% endif %}
-        </div>
+
         <div class="sidebar-content text-center">
             <a href="{% url 'logout' %}" id="logoutLink" class="text-dark">
                 <i class="bi bi-box-arrow-right fs-4 me-1"></i> Выйти
@@ -170,40 +138,40 @@
 
     <!-- Рекомендованные предложения -->
 <section class="container mt-3 catalog">
-    <div class="border p-4 mb-5" style="border-radius: 10px !important;">
-        <form class="row g-3" method="get">
-            <div class="col-md-4 form-floating">
-                {% if date_start %}
-                <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " value="{{ date_start }}" min="{{ date_now }}" onchange="updateMinCheckoutDate()">
-                {% else %}
-                <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " min="{{ date_now }}" onchange="updateMinCheckoutDate()">
-                {% endif %}
-                <label for="check-in-date" class="form-label">Дата въезда</label>
-            </div>
-            <div class="col-md-4 form-floating">
-                {% if date_end %}
-                <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " value="{{ date_end }}" min="{{ date_tomorrow }}">
-                {% else %}
-                <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " min="{{ date_tomorrow }}">
-                {% endif %}
-                <label for="check-out-date" class="form-label">Дата выезда</label>
-            </div>
-            <div class="col-md-4 form-floating">
-                <select class="form-select" id="people-count" name="people-count" required>
-                    <option value="" {% if not people_count %}selected{% endif %}>Выберите количество</option>
-                    {% for num in people_options %}
-                        <option value="{{ num }}" {% if people_count == num %}selected{% endif %}>
-                            {{ num }} человек
-                        </option>
-                    {% endfor %}
-                </select>
-                <label for="people-count" class="form-label">Количество людей</label>
-            </div>
-            <div class="col-2">
-                <button type="submit" class="btn btn-primary w-100 catalog-search">Найти</button>
-            </div>
-        </form>
-    </div>
+<!--    <div class="border p-4 mb-5" style="border-radius: 10px !important;">-->
+<!--        <form class="row g-3" method="get">-->
+<!--            <div class="col-md-4 form-floating">-->
+<!--                {% if date_start %}-->
+<!--                <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " value="{{ date_start }}" min="{{ date_now }}" onchange="updateMinCheckoutDate()">-->
+<!--                {% else %}-->
+<!--                <input type="date" class="form-control" id="check-in-date" name="check-in-date" required placeholder=" " min="{{ date_now }}" onchange="updateMinCheckoutDate()">-->
+<!--                {% endif %}-->
+<!--                <label for="check-in-date" class="form-label">Дата въезда</label>-->
+<!--            </div>-->
+<!--            <div class="col-md-4 form-floating">-->
+<!--                {% if date_end %}-->
+<!--                <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " value="{{ date_end }}" min="{{ date_tomorrow }}">-->
+<!--                {% else %}-->
+<!--                <input type="date" class="form-control" id="check-out-date" name="check-out-date" required placeholder=" " min="{{ date_tomorrow }}">-->
+<!--                {% endif %}-->
+<!--                <label for="check-out-date" class="form-label">Дата выезда</label>-->
+<!--            </div>-->
+<!--            <div class="col-md-4 form-floating">-->
+<!--                <select class="form-select" id="people-count" name="people-count" required>-->
+<!--                    <option value="" {% if not people_count %}selected{% endif %}>Выберите количество</option>-->
+<!--                    {% for num in people_options %}-->
+<!--                        <option value="{{ num }}" {% if people_count == num %}selected{% endif %}>-->
+<!--                            {{ num }} человек-->
+<!--                        </option>-->
+<!--                    {% endfor %}-->
+<!--                </select>-->
+<!--                <label for="people-count" class="form-label">Количество людей</label>-->
+<!--            </div>-->
+<!--            <div class="col-2">-->
+<!--                <button type="submit" class="btn btn-primary w-100 catalog-search">Найти</button>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
 
     <div class="d-flex justify-content-between align-items-center mb-4 title-recommendations-block">
         <span class="fs-2 title-recommendations" style="font-size: 48px; font-weight: 500; line-height: 48px;">Подборка квартир</span>
@@ -211,25 +179,30 @@
     </div>
 
     <div class="row g-4 mt-4">
-        {% for apart in aparts %}
-        <div class="col-md-4">
-            <div class="card shadow-sm card-apart-catalog">
-                <img src="{{ apart.photos.first.image.url }}" class="card-img-top" alt="Квартира" style="height: 335px; border-radius: 10px; object-fit: cover;">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between mb-0">
-                    <h5 class="card-title mb-0">{{ apart.name }}</h5>
-                        <a href="https://2gis.ru/vladivostok/search/{{ apart.street }}" class="" target="_blank" style="font-size:13px;"><i class="bi bi-geo-alt"></i> {{ apart.street }}</a>
-                    </div>
-                    <p class="card-text text-muted card-desc-apart"><i class="bi bi-people fs-6"></i> до {{ apart.quantity_people }} мест • {{ apart.square }} м²</p>
-                    <div class="d-flex justify-content-between align-items-center card-apart-block-price">
-                        <span class="fs-5">от {{ apart.price|round_price }} ₽ <span class="card-text text-muted fs-6">/ сутки</span></span>
-                        <a href="{% url 'card' apart.id %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" class="btn btn-outline-primary" style="padding: 10px 20px;">Выбрать</a>
-                    </div>
-                </div>
-            </div>
+<!--        {% for apart in aparts %}-->
+<!--        <div class="col-md-4">-->
+<!--            <div class="card shadow-sm card-apart-catalog">-->
+<!--                <img src="{{ apart.photos.first.image.url }}" class="card-img-top" alt="Квартира" style="height: 335px; border-radius: 10px; object-fit: cover;">-->
+<!--                <div class="card-body">-->
+<!--                    <div class="d-flex align-items-center justify-content-between mb-0">-->
+<!--                    <h5 class="card-title mb-0">{{ apart.name }}</h5>-->
+<!--                        <a href="https://2gis.ru/vladivostok/search/{{ apart.street }}" class="" target="_blank" style="font-size:13px;"><i class="bi bi-geo-alt"></i> {{ apart.street }}</a>-->
+<!--                    </div>-->
+<!--                    <p class="card-text text-muted card-desc-apart"><i class="bi bi-people fs-6"></i> до {{ apart.quantity_people }} мест • {{ apart.square }} м²</p>-->
+<!--                    <div class="d-flex justify-content-between align-items-center card-apart-block-price">-->
+<!--                        <span class="fs-5">от {{ apart.price|round_price }} ₽ <span class="card-text text-muted fs-6">/ сутки</span></span>-->
+<!--                        <a href="{% url 'card' apart.id %}{% if request.GET.urlencode %}?{{ request.GET.urlencode }}{% endif %}" class="btn btn-outline-primary" style="padding: 10px 20px;">Выбрать</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
-        </div>
-        {% endfor %}
+<!--        </div>-->
+<!--        {% endfor %}-->
+        <div id="hr-widget"></div>
+    <script type="module" src="https://homereserve.ru/widget.js"></script>
+    <script type="module">
+        window.homereserve.initWidgetList({"token":"AAC9yg","tag":"Web"})
+    </script>
 
 
 
